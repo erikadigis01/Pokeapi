@@ -19,16 +19,16 @@ public class Usuario {
     @Column(name = "id")
     private Integer Id;
     
-     @Column(name = "nombre")
+    @Column(name = "nombre")
     private String Nombre;
     
     @Column(name = "apellidopaterno")
     private String ApellidoPaterno;
     
-    @Column(name = "apellidopaterno")
+    @Column(name = "apellidomaterno")
     private String ApellidoMaterno;
     
-    @Column(name = "apellidomaterno")
+    @Column(name = "email")
     private String Email;
     
     @Column(name = "password")

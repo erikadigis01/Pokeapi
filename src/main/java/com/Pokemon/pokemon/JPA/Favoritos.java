@@ -22,7 +22,7 @@ public class Favoritos {
     @Column(name = "idpokemon")
     private int IdPokemon;
     
-    //@ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idusuario", nullable = true)
     public Usuario Usuario;
     
