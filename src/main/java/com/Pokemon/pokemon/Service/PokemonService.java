@@ -18,6 +18,8 @@ public class PokemonService {
         return restTemplate.getForObject(url, PokemonDTO.class); 
     }
     //traer getall de pokemones limit = cantidad de pokemones offset = desde donde empezar
+    //@JsonProperty("id")
+
     public List<PokemonDTO> getPokemons(int limit, int offset) {
         String url = BASE_URL + "?limit=" + limit + "&offset=" + offset;
 

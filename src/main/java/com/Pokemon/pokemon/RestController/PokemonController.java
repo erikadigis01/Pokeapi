@@ -16,13 +16,13 @@ public class PokemonController {
     
     @Autowired
     PokemonService pokemonService;
-    
-    //traerpokemon por nombre
+
     @GetMapping("/{name}")
     public PokemonDTO GetPokemonByName(@PathVariable String name){
         return pokemonService.getPokemonByName(name);
     }
-    
+    //@JsonProperty("id")
+
     @GetMapping("/pokemons")
     public List<PokemonDTO> GetAll(@RequestParam(defaultValue = "20") int limit, @RequestParam(defaultValue = "0") int offset){
         return pokemonService.getPokemons(limit, offset);

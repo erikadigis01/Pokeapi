@@ -2,7 +2,7 @@ package com.Pokemon.pokemon.DTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-
+//@JsonProperty("id")
 public class PokemonDTO {
     
     @JsonProperty("id")

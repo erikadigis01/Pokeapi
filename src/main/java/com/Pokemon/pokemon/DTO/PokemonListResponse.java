@@ -2,6 +2,7 @@ package com.Pokemon.pokemon.DTO;
 
 import java.util.List;
 
+//@JsonProperty("id")
 public class PokemonListResponse {
 
     private int count;
