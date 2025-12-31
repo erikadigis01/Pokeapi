@@ -1,8 +1,8 @@
 package com.Pokemon.pokemon.DTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
 
-//@JsonProperty("id")
 public class PokemonDTO {
     
     @JsonProperty("id")
@@ -13,6 +13,9 @@ public class PokemonDTO {
     
     @JsonProperty("sprites")
     private Sprites Sprites;
+    
+    @JsonProperty("types")
+    private List<PokemonTypeDTO> types;
     
     public PokemonDTO(){}
     
