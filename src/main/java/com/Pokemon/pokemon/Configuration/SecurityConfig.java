@@ -53,6 +53,8 @@ public class SecurityConfig {
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/login/**").permitAll()
                 .requestMatchers("/Error/**").permitAll()
+                .requestMatchers("/pokemon/**").authenticated()
+                .requestMatchers("/pokedex/**").authenticated()
                 .anyRequest().authenticated()
             )
             

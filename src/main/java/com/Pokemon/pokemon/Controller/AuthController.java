@@ -3,6 +3,7 @@ package com.Pokemon.pokemon.Controller;
 import com.Pokemon.pokemon.DTO.LoginRequest;
 import com.Pokemon.pokemon.Service.JwtService;
 import com.Pokemon.pokemon.Service.UsuarioService;
+import jakarta.servlet.http.HttpSession;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -40,7 +41,7 @@ public class AuthController {
     }
     
     @PostMapping
-    public String iniciarSesion(@RequestParam String email, @RequestParam String password, Model model) {
+    public String iniciarSesion(@RequestParam String email, @RequestParam String password, Model model, HttpSession session) {
 
         RestTemplate restTemplate = new RestTemplate();
         LoginRequest loginReq = new LoginRequest(email, password);
@@ -59,6 +60,8 @@ public class AuthController {
 
             Map body = response.getBody();
             if (body != null && body.containsKey("token")) {
+                String token = (String) body.get("token"); 
+                session.setAttribute("jwt", token);
                 return "Index"; 
             } else {
                 model.addAttribute("error", "Correo o contraseña incorrectos");
