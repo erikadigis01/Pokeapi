@@ -1,5 +1,6 @@
 package com.Pokemon.pokemon.Configuration;
 
+import com.Pokemon.pokemon.Service.JwtAuthenticationFilter;
 import com.Pokemon.pokemon.Service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +16,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 
 @Configuration
 @EnableWebSecurity
@@ -23,15 +26,20 @@ public class SecurityConfig {
     @Autowired
     private UsuarioService usuarioService;
     
-    @Bean public AuthenticationProvider authenticationProvider() { 
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(usuarioService); 
-        provider.setPasswordEncoder(passwordEncoder()); 
-        return provider; 
-    }
+    @Autowired
+    private JwtAuthenticationFilter jwtFilter;
     
     @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(usuarioService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
+
+    
+    @Bean 
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
+        return config.getAuthenticationManager(); 
     }
     
     @Bean
@@ -49,6 +57,7 @@ public class SecurityConfig {
             )
             
             .authenticationProvider(authenticationProvider()) 
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable());
         
@@ -58,7 +67,7 @@ public class SecurityConfig {
     
     @Bean 
     public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(12);
     }
 
 }

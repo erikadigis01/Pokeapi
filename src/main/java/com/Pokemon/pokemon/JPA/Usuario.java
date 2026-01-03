@@ -35,7 +35,7 @@ public class Usuario {
     private String Password;
     
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "idrol", nullable = true)
+    @JoinColumn(name = "idroll", nullable = true)
     public Roll Roll;
     
     public Usuario(){}

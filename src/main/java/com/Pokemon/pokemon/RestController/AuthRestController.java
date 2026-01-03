@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.http.HttpStatus;
 
 @RestController
 @RequestMapping("/auth") // Ruta para la API
@@ -38,10 +39,15 @@ public class AuthRestController {
 
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
+            response.put("status", "success");
             return ResponseEntity.ok(response);
 
         } catch (BadCredentialsException e) {
-            return ResponseEntity.status(401).body("Email o contraseña incorrectos");
+            Map<String, String> response = new HashMap<>();
+            response.put("status", "error");
+            response.put("message", "Email o contraseña incorrectos");
+            return ResponseEntity.ok(response);
         }
     }
+
 }

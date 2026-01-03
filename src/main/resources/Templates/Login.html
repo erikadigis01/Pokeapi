@@ -334,6 +334,18 @@
             .footer-text a:hover {
                 color: #FDE047;
             }
+            .error-message {
+                display: block;
+                margin-bottom: 20px;
+                padding: 12px 16px;
+                border: 3px solid #FF1744;
+                border-radius: 12px;
+                background: #FFF5F5;
+                color: #B91C1C;
+                font-weight: 600;
+                text-align: center;
+                box-shadow: 0 4px 0 #FF1744;
+            }
 
             @media (max-width: 768px) {
                 .titulo-pokemon {
@@ -375,13 +387,13 @@
                 </div>
 
                 <!-- Formulario -->
-                <div class="form-container">
+                <div class="form-container" >
                     <div class="form-border-top"></div>
 
                     <!-- Icono Pikachu -->
                     <div class="pikachu-icon">⚡</div>
 
-                    <form id="loginForm" onsubmit="handleLogin(event)">
+                    <form id="loginForm"  th:action="@{/login}" method="post">
                         <!-- Email -->
                         <div class="form-group">
                             <label for="email">Email</label>
@@ -415,6 +427,11 @@
                         <div class="forgot-password">
                             <a href="#">¿Olvidaste tu contraseña?</a>
                         </div>
+                        <span 
+                            th:if="${error != null}" 
+                            th:text="${error}" 
+                            class="error-message">
+                        </span>
 
                         <!-- Botón Submit -->
                         <button type="submit" class="btn-submit">
