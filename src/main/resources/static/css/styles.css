@@ -1,0 +1,606 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, #9333ea 0%, #ec4899 50%, #ef4444 100%);
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Header Styles */
+.header {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.header-title h1 {
+    color: white;
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.sparkle-icon {
+    color: #fde047;
+}
+
+/* Search Bar */
+.search-container {
+    max-width: 672px;
+    margin: 0 auto 1.5rem;
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+}
+
+.search-input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: white;
+}
+
+/* Filters */
+.filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.filter-btn {
+    padding: 0.5rem 1.5rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    text-transform: capitalize;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.filter-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.filter-btn.active {
+    background: white;
+    color: #9333ea;
+    transform: scale(1.1);
+}
+
+/* Main Container */
+.main-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* Pokemon Grid */
+.pokemon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Pokemon Card */
+.pokemon-card {
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.pokemon-card:hover {
+    transform: scale(1.05) translateY(-5px);
+}
+
+/* Type Colors */
+.pokemon-card.fire { background: linear-gradient(135deg, #fb923c 0%, #ef4444 100%); }
+.pokemon-card.water { background: linear-gradient(135deg, #60a5fa 0%, #06b6d4 100%); }
+.pokemon-card.grass { background: linear-gradient(135deg, #4ade80 0%, #10b981 100%); }
+.pokemon-card.electric { background: linear-gradient(135deg, #fde047 0%, #eab308 100%); }
+.pokemon-card.psychic { background: linear-gradient(135deg, #f472b6 0%, #a855f7 100%); }
+.pokemon-card.rock { background: linear-gradient(135deg, #6b7280 0%, #57534e 100%); }
+.pokemon-card.normal { background: linear-gradient(135deg, #d1d5db 0%, #9ca3af 100%); }
+.pokemon-card.poison { background: linear-gradient(135deg, #c084fc 0%, #7c3aed 100%); }
+.pokemon-card.flying { background: linear-gradient(135deg, #a5b4fc 0%, #38bdf8 100%); }
+.pokemon-card.bug { background: linear-gradient(135deg, #a3e635 0%, #22c55e 100%); }
+
+/* Pokemon Card Badge */
+.pokemon-badge {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    border-radius: 9999px;
+    padding: 0.25rem 0.75rem;
+}
+
+.pokemon-badge span {
+    color: white;
+    font-weight: bold;
+    font-size: 0.875rem;
+}
+
+/* Pokemon Image Container */
+.pokemon-image-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.pokemon-glow {
+    width: 8rem;
+    height: 8rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    position: absolute;
+    top: 1rem;
+    filter: blur(40px);
+}
+
+.pokemon-image {
+    width: 10rem;
+    height: 10rem;
+    object-fit: contain;
+    position: relative;
+    z-index: 10;
+    filter: drop-shadow(0 25px 25px rgba(0, 0, 0, 0.3));
+}
+
+/* Pokemon Name */
+.pokemon-name {
+    color: white;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    text-transform: capitalize;
+}
+
+/* Pokemon Type Badge */
+.pokemon-type-container {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.pokemon-type-badge {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    border-radius: 9999px;
+    padding: 0.25rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pokemon-type-badge span {
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: capitalize;
+}
+
+/* Pokemon Stats Mini */
+.pokemon-stats-mini {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.stat-mini {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+.stat-mini-label {
+    color: white;
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+.stat-mini-value {
+    color: white;
+    font-weight: bold;
+}
+
+/* No Results */
+.no-results {
+    text-align: center;
+    padding: 5rem 0;
+}
+
+.no-results-title {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.no-results-subtitle {
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 0.5rem;
+}
+
+/* Footer */
+.footer {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin-top: 3rem;
+}
+
+.footer-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
+    text-align: center;
+}
+
+.footer-text {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.footer-count {
+    font-weight: bold;
+    color: white;
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.modal-overlay.active {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal {
+    position: relative;
+    width: 100%;
+    max-width: 896px;
+    border-radius: 1.5rem;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    animation: scaleIn 0.3s ease;
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: none;
+    border-radius: 50%;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.modal-close svg {
+    color: white;
+    display: block;
+}
+
+.modal-content {
+    padding: 2rem;
+}
+
+/* Modal Header */
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.modal-title-section h2 {
+    color: white;
+    font-size: 2.25rem;
+    font-weight: bold;
+    text-transform: capitalize;
+    margin-bottom: 0.5rem;
+}
+
+.modal-type-badges {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.modal-number {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    border-radius: 9999px;
+    padding: 0.5rem 1.25rem;
+}
+
+.modal-number span {
+    color: white;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+/* Modal Grid */
+.modal-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .modal-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Modal Left Column */
+.modal-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.modal-image-container {
+    position: relative;
+}
+
+.modal-image-glow {
+    width: 12rem;
+    height: 12rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    position: absolute;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    filter: blur(60px);
+}
+
+.modal-image {
+    width: 16rem;
+    height: 16rem;
+    object-fit: contain;
+    position: relative;
+    z-index: 10;
+    filter: drop-shadow(0 25px 25px rgba(0, 0, 0, 0.3));
+}
+
+.modal-physical-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    width: 100%;
+    margin-top: 1.5rem;
+}
+
+.physical-stat {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    text-align: center;
+}
+
+.physical-stat-label {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+}
+
+.physical-stat-value {
+    color: white;
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+
+/* Modal Right Column */
+.modal-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.modal-stats-title {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.stat-row {
+    margin-bottom: 1rem;
+}
+
+.stat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stat-label-container svg {
+    color: white;
+}
+
+.stat-label {
+    color: white;
+    font-weight: 600;
+}
+
+.stat-value {
+    color: white;
+    font-weight: bold;
+}
+
+.stat-bar-bg {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 9999px;
+    height: 0.75rem;
+    overflow: hidden;
+}
+
+.stat-bar-fill {
+    background: white;
+    height: 100%;
+    border-radius: 9999px;
+    transition: width 0.8s ease;
+}
+
+/* Modal Abilities */
+.modal-abilities {
+    margin-top: 1.5rem;
+}
+
+.modal-abilities h4 {
+    color: white;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.abilities-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.ability-badge {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 9999px;
+    padding: 0.5rem 1rem;
+}
+
+.ability-badge span {
+    color: white;
+    text-transform: capitalize;
+}
+
+/* Modal Description */
+.modal-description {
+    margin-top: 2rem;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    padding: 1.5rem;
+}
+
+.modal-description p {
+    color: white;
+    text-align: center;
+    line-height: 1.6;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .header-title h1 {
+        font-size: 2rem;
+    }
+    
+    .sparkle-icon {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .pokemon-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+    
+    .modal-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+}
