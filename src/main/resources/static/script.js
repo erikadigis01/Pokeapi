@@ -71,7 +71,7 @@ function createPokemonCard(pokemon) {
     card.classList.add('pokemon-card');
 
     // aplicar todas las clases de tipo
-    types.forEach(t => card.classList.add(t));
+    types.forEach(t => card.classList.add(t.toLowerCase()));
 
     card.onclick = () => openModal(pokemon);
 
@@ -128,7 +128,7 @@ function openModal(pokemon) {
     modal.className = 'modal';
 
     // usar el primer tipo como base visual
-    modal.classList.add(types[0]);
+    modal.classList.add(types[0].toLowerCase());
 
     const typesBadges = types.map(type => `
         <div class="pokemon-type-badge ${type}">

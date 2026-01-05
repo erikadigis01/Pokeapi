@@ -10,7 +10,7 @@ public class PokemonController {
 
     @GetMapping()
     public String index() {
-        return "Index";
+        return "Index2";
     }
 
 }
