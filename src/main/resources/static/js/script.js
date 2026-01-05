@@ -279,18 +279,22 @@ filterContainer.addEventListener('click', e => {
 // ====================================
 // CARGA DE DATOS
 // ====================================
+
 async function loadPokemonFromDatabase() {
     try {
-        const response = await fetch('http://localhost:8080/pokemon/pokemons');
-        const data = await response.json();
+        const response = await fetch("/pokemon/pokemons"); // sin Authorization
+        if (!response.ok) {
+            throw new Error("Error en la petición: " + response.status);
+        }
 
-        console.log('DATA BACKEND:', data);
+        const data = await response.json();
+        console.log("DATA BACKEND:", data);
 
         pokemonDatabase = data;
         filteredPokemon = [...pokemonDatabase];
         renderPokemonCards();
     } catch (error) {
-        console.error('Error al cargar datos:', error);
+        console.error("Error al cargar datos:", error);
     }
 }
 

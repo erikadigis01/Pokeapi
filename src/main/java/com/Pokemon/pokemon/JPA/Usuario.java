@@ -20,7 +20,7 @@ public class Usuario {
     private Integer Id;
     
     @Column(name = "nombre")
-    private String Nombre;
+    private String nombre;
     
     @Column(name = "apellidopaterno")
     private String ApellidoPaterno;
@@ -29,7 +29,7 @@ public class Usuario {
     private String ApellidoMaterno;
     
     @Column(name = "email")
-    private String Email;
+    private String email;
     
     @Column(name = "password")
     private String Password;
@@ -40,13 +40,13 @@ public class Usuario {
     
     public Usuario(){}
     
-    public Usuario (Integer Id,String Nombre, String ApellidoPaterno, String ApellidoMaterno, String Email, String Password, Roll Roll){
+    public Usuario (Integer Id,String nombre, String ApellidoPaterno, String ApellidoMaterno, String email, String Password, Roll Roll){
     
         this.Id = Id;
-        this.Nombre = Nombre;
+        this.nombre = nombre;
         this.ApellidoPaterno = ApellidoPaterno;
         this.ApellidoMaterno = ApellidoMaterno;
-        this.Email = Email;
+        this.email = email;
         this.Password = Password;
         this.Roll = Roll;
     }
@@ -62,11 +62,11 @@ public class Usuario {
     }
     
     public String getNombre() {
-        return Nombre;
+        return nombre;
     }
 
-    public void setNombre(String Nombre) {
-        this.Nombre = Nombre;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
     
     // Getter y Setter para ApellidoPaterno
@@ -89,11 +89,11 @@ public class Usuario {
 
     // Getter y Setter para Email
     public String getEmail() {
-        return Email;
+        return email;
     }
 
-    public void setEmail(String Email) {
-        this.Email = Email;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     // Getter y Setter para Password
