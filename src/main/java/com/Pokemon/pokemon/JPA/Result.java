@@ -4,12 +4,12 @@ package com.Pokemon.pokemon.JPA;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 
-public class Result {
+public class Result <T>{
     
     public boolean correct;
     public String errorMessage;
-    public Object object;
-    public List<Object> objects;
+    public T object;
+    public List<T> objects;
     public Exception ex;
     
     @JsonIgnore

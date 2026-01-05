@@ -1,11 +1,15 @@
 package com.Pokemon.pokemon.Controller;
 
 import com.Pokemon.pokemon.DTO.LoginRequest;
+import com.Pokemon.pokemon.JPA.Result;
+import com.Pokemon.pokemon.JPA.Roll;
+import com.Pokemon.pokemon.JPA.Usuario;
 import com.Pokemon.pokemon.Service.JwtService;
 import com.Pokemon.pokemon.Service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -19,10 +23,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/login")
 public class AuthController {
+    
+    public String url = "http://localhost:8080/auth";
     
     //para realizar la autenticacion del usuario
     @Autowired
@@ -40,8 +47,60 @@ public class AuthController {
         return "Login";
     }
     
+    @GetMapping("/registro")
+    public String createAccount(Model model) {
+        return "Registro";
+    }
+    @PostMapping("/registrar")
+    public String RegistrarCuenta(@RequestParam String nombre, @RequestParam String apellidoPaterno,
+            @RequestParam String apellidoMaterno,@RequestParam String email,
+            @RequestParam String password, Model model, RedirectAttributes redirectAttributes ){
+        
+        //crear al usuario
+        Usuario usuario = new Usuario();
+        usuario.setNombre(nombre);
+        usuario.setApellidoPaterno(apellidoPaterno);
+        usuario.setApellidoMaterno(apellidoMaterno);
+        usuario.setEmail(email);
+        usuario.setPassword(password);
+        usuario.Roll = new Roll();
+        usuario.Roll.setIdRoll(4);//por default
+        
+        //mandar al restcontroller
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Usuario> requestEntity = new HttpEntity<>(usuario, headers);
+        
+        try {
+        
+            ResponseEntity<Result<Usuario>> responseEntityUsuario =
+            restTemplate.exchange(
+                url + "/addUsuario",
+                HttpMethod.POST,
+                requestEntity,
+                new ParameterizedTypeReference<Result<Usuario>>() {}
+            );
+            
+            if(responseEntityUsuario.getStatusCode().value() == 201){
+                Result resultUsuario = responseEntityUsuario.getBody();
+                redirectAttributes.addFlashAttribute("mensaje", "Usuario creado exitosamente. Ahora puedes iniciar sesión.");
+                return "redirect:/login";
+            } else {
+                redirectAttributes.addFlashAttribute("error", "No se pudo crear el usuario: ");
+                return "redirect:/login";
+            }
+        
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("error", "No se pudo crear el usuario: " + ex.getMessage());
+            return "redirect:/login";
+        
+        }
+    }
+    
     @PostMapping
-    public String iniciarSesion(@RequestParam String email, @RequestParam String password, Model model, HttpSession session) {
+    public String iniciarSesion(@RequestParam String email, @RequestParam String password, 
+            Model model, HttpSession session, RedirectAttributes redirectAttributes) {
 
         RestTemplate restTemplate = new RestTemplate();
         LoginRequest loginReq = new LoginRequest(email, password);
@@ -52,7 +111,7 @@ public class AuthController {
 
         try {
             ResponseEntity<Map> response = restTemplate.exchange(
-                "http://localhost:8080/auth/login",
+                url + "/login",
                 HttpMethod.POST,
                 request,
                 Map.class
@@ -64,13 +123,13 @@ public class AuthController {
                 session.setAttribute("jwt", token);
                 return "redirect:/pokedex"; 
             } else {
-                model.addAttribute("error", "Correo o contraseña incorrectos");
-                return "Login";
+                redirectAttributes.addFlashAttribute("error", "Correo o contraseña incorrectos");
+                return "redirect:/login";
             }
 
         } catch (Exception ex) {
-            model.addAttribute("error", "Correo o contraseña incorrectos");
-            return "Login"; 
+           redirectAttributes.addFlashAttribute("error", "Correo o contraseña incorrectos");
+           return "redirect:/login"; 
         }
     }
 
