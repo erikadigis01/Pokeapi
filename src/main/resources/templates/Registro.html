@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -261,12 +261,12 @@
                     <h2 class="titulo-registro">REGISTRO</h2>
                     <p class="subtitulo">¡Únete a la aventura como entrenador!</p>
                 </div>
-
+                
                 <!-- Formulario -->
                 <div class="form-container">
                     <div class="form-border-top"></div>
 
-                    <form id="registroForm" onsubmit="handleSubmit(event)">
+                    <form id="registroForm" th:action="@{/login/registrar}" method="post">
                         <!-- Nombre -->
                         <div class="form-group">
                             <label for="nombre">Nombre</label>
@@ -382,9 +382,6 @@
 
                 // Mostrar alerta de éxito
                 alert('¡Registro exitoso! Bienvenido entrenador Pokémon');
-
-                // Aquí podrías enviar los datos a un servidor
-                // Por ejemplo: fetch('/api/registro', { method: 'POST', body: JSON.stringify(formData) })
             }
         </script>
     </body>

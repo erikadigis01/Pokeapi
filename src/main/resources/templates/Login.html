@@ -334,6 +334,19 @@
             .footer-text a:hover {
                 color: #FDE047;
             }
+            .success-message {
+                display: block;
+                margin-bottom: 20px;
+                padding: 12px 16px;
+                border: 3px solid #32CD32;
+                border-radius: 12px;
+                background: #FFF5F5;
+                color: #32CD32;
+                font-weight: 600;
+                text-align: center;
+                box-shadow: 0 4px 0 #32CD32;
+            }
+            
             .error-message {
                 display: block;
                 margin-bottom: 20px;
@@ -385,7 +398,8 @@
                     <h2 class="titulo-login">LOGIN</h2>
                     <p class="subtitulo">¡Continúa tu aventura!</p>
                 </div>
-
+                <span th:if="${mensaje != null}" th:text="${mensaje}" class="success-message"></span>
+                <span th:if="${error != null}" th:text="${error}" class="error-message"></span>
                 <!-- Formulario -->
                 <div class="form-container" >
                     <div class="form-border-top"></div>
@@ -470,7 +484,7 @@
 
                 <!-- Footer -->
                 <p class="footer-text">
-                    ¿No tienes cuenta? <a href="registro.html">Regístrate aquí</a>
+                    ¿No tienes cuenta? <a th:href="@{/login/registro}">Regístrate aquí</a>
                 </p>
             </div>
         </div>
