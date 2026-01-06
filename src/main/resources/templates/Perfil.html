@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Entrenador Pokémon - Ash Ketchum</title>
+    <link rel="stylesheet" href="/css/perfil.css">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="profile-container">
+        <!-- Profile Header Card -->
+        <div class="profile-header-card">
+            <!-- Decorative elements -->
+            <div class="decorative-circle decorative-circle-top"></div>
+            <div class="decorative-circle decorative-circle-bottom"></div>
+            
+            <div class="profile-content">
+                <!-- Avatar Section -->
+                <div class="avatar-container">
+                    <div class="avatar">
+                        <img src="https://images.unsplash.com/photo-1740252117044-2af197eea287?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwb2tlbW9uJTIwdHJhaW5lciUyMGF2YXRhcnxlbnwxfHx8fDE3Njc2NTUwODR8MA&ixlib=rb-4.1.0&q=80&w=1080" alt="Ash Ketchum">
+                    </div>
+                    <div class="trophy-badge">
+                        <i data-lucide="trophy"></i>
+                    </div>
+                </div>
+
+                <!-- Profile Info -->
+                <div class="profile-info">
+                    <div>
+                        <h1 class="trainer-name">Ash Ketchum</h1>
+                        <div class="info-badges">
+                            <div class="info-badge">
+                                <i data-lucide="map-pin"></i>
+                                <span>Pueblo Paleta</span>
+                            </div>
+                            <div class="info-badge">
+                                <i data-lucide="award"></i>
+                                <span>8 Medallas</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-cards">
+                        <div class="stat-card stat-level">
+                            <div class="stat-label">
+                                <i data-lucide="zap"></i>
+                                Nivel
+                            </div>
+                            <div class="stat-value">42</div>
+                        </div>
+                        <div class="stat-card stat-member">
+                            <div class="stat-label">
+                                <i data-lucide="star"></i>
+                                Miembro desde
+                            </div>
+                            <div class="stat-member-value">Enero 2020</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Favorite Pokemon Section -->
+        <div class="favorite-section">
+            <div class="section-header">
+                <i data-lucide="heart" class="heart-icon"></i>
+                <h2>Pokémon Favoritos</h2>
+            </div>
+
+            <div class="pokemon-grid">
+                <main class="main-container">
+                    <div class="pokemon-grid" id="pokemonGrid">
+                        <!-- Las tarjetas de Pokémon se generarán dinámicamente aquí -->
+                    </div>
+
+                    <!-- No Results Message -->
+                    <div class="no-results" id="noResults" style="display: none;">
+                        <p class="no-results-title">No se encontraron Pokémon</p>
+                        <p class="no-results-subtitle">Intenta con otro término de búsqueda</p>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-section-card">
+            <h3 class="stats-title">Estadísticas del Entrenador</h3>
+            <div class="stats-grid">
+                <div class="stat-item stat-blue">
+                    <div class="stat-number">150</div>
+                    <div class="stat-description">Pokémon Capturados</div>
+                </div>
+                <div class="stat-item stat-green">
+                    <div class="stat-number">234</div>
+                    <div class="stat-description">Batallas Ganadas</div>
+                </div>
+                <div class="stat-item stat-purple">
+                    <div class="stat-number">42</div>
+                    <div class="stat-description">Pokémon Evolucionados</div>
+                </div>
+                <div class="stat-item stat-orange">
+                    <div class="stat-number">18</div>
+                    <div class="stat-description">Gimnasios Visitados</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/js/script.js"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
