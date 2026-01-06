@@ -1,317 +1,285 @@
-// ====================================
-// VARIABLES GLOBALES
-// ====================================
-let pokemonDatabase = [];
-let currentFilter = 'all';
-let currentSearch = '';
-let filteredPokemon = [];
+// Type colors (darker for better contrast with white text)
+const typeColors = {
+    normal: '#8A8A59',
+    fire: '#C0601A',
+    water: '#4A70C0',
+    electric: '#D4B020',
+    grass: '#5FA844',
+    ice: '#6FB5B5',
+    fighting: '#8E2420',
+    poison: '#7A2F7A',
+    ground: '#B89E4C',
+    flying: '#7C6AC8',
+    psychic: '#D2456F',
+    bug: '#7F8F1E',
+    rock: '#8E7A2E',
+    ghost: '#5A456F',
+    dragon: '#5528C8',
+    dark: '#4F3E3E',
+    steel: '#8E8EA8',
+    fairy: '#C97C92'
+};
 
-// ====================================
-// HELPERS (ADAPTADOS A TU JSON)
-// ====================================
 
-function getMainType(pokemon) {
-    return pokemon.types?.[0]?.type?.name || 'unknown';
-}
+// State
+let allPokemons = [];
+let filteredPokemons = [];
+let currentPage = 1;
+let totalPages = 0;
+const pokemonsPerPage = 20;
 
-function getImage(pokemon) {
-    return pokemon.sprites?.front_default || '';
-}
-
-function getStat(pokemon, statName) {
-    const stat = pokemon.stats?.find(s => s.stat.name === statName);
-    return stat ? stat.base_stat : 0;
-}
-
-function getAbilities(pokemon) {
-    return pokemon.abilities?.map(a => a.ability.name) || [];
-}
-
-// ====================================
-// ELEMENTOS DOM
-// ====================================
+// DOM Elements
 const searchInput = document.getElementById('searchInput');
-const filterContainer = document.getElementById('filterContainer');
-const pokemonGrid = document.getElementById('pokemonGrid');
+const clearSearchBtn = document.getElementById('clearSearch');
+const searchResults = document.getElementById('searchResults');
+const loading = document.getElementById('loading');
 const noResults = document.getElementById('noResults');
-const pokemonCount = document.getElementById('pokemonCount');
-const modalOverlay = document.getElementById('modalOverlay');
+const pokemonGrid = document.getElementById('pokemonGrid');
+const pagination = document.getElementById('pagination');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const pageInfo = document.getElementById('pageInfo');
 const modal = document.getElementById('modal');
-const closeModal = document.getElementById('closeModal');
-const modalContent = document.getElementById('modalContent');
+const modalBody = document.getElementById('modalBody');
 
-// ====================================
-// RENDER LISTA
-// ====================================
-function renderPokemonCards() {
+// Initialize
+fetchPokemons(currentPage);
+
+// Event Listeners
+searchInput.addEventListener('input', handleSearch);
+clearSearchBtn.addEventListener('click', clearSearch);
+prevBtn.addEventListener('click', () => changePage(currentPage - 1));
+nextBtn.addEventListener('click', () => changePage(currentPage + 1));
+modal.addEventListener('click', (e) => {
+    if (e.target === modal || e.target.classList.contains('modal-overlay') || e.target.classList.contains('modal-close')) {
+        closeModal();
+    }
+});
+
+// Functions
+async function fetchPokemons(page) {
+    showLoading(true);
+
+    try {
+        const response = await fetch(
+                `/pokemon/pokemons?page=${page - 1}&size=${pokemonsPerPage}`
+                );
+
+        if (!response.ok) {
+            throw new Error(`HTTP error ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // 🔹 Reset limpio
+        allPokemons = [];
+        filteredPokemons = [];
+
+        // 🔹 Datos desde backend
+        allPokemons = data.content;
+        filteredPokemons = allPokemons;
+
+        totalPages = Math.ceil(data.totalElements / pokemonsPerPage);
+
+        renderPokemons();
+        updatePagination();
+
+    } catch (error) {
+        console.error('Error fetching Pokemon:', error);
+    } finally {
+        showLoading(false);
+    }
+}
+
+
+
+function renderPokemons() {
     pokemonGrid.innerHTML = '';
 
-    if (filteredPokemon.length === 0) {
+    if (filteredPokemons.length === 0) {
         noResults.style.display = 'block';
         pokemonGrid.style.display = 'none';
-    } else {
-        noResults.style.display = 'none';
-        pokemonGrid.style.display = 'grid';
-
-        filteredPokemon.forEach(pokemon => {
-            pokemonGrid.appendChild(createPokemonCard(pokemon));
-        });
+        return;
     }
 
-    pokemonCount.textContent = filteredPokemon.length;
+    noResults.style.display = 'none';
+    pokemonGrid.style.display = 'grid';
+
+    filteredPokemons.forEach(pokemon => {
+        const card = createPokemonCard(pokemon);
+        pokemonGrid.appendChild(card);
+    });
 }
 
-// ====================================
-// TARJETA
-// ====================================
 function createPokemonCard(pokemon) {
-    const types = getPokemonTypes(pokemon);
-
     const card = document.createElement('div');
-    card.classList.add('pokemon-card');
+    card.className = 'pokemon-card';
 
-    // aplicar todas las clases de tipo
-    types.forEach(t => card.classList.add(t.toLowerCase()));
+    const primaryType = pokemon.types[0]?.type.name || 'normal';
+    const typeColor = typeColors[primaryType] || '#A8A878';
 
-    card.onclick = () => openModal(pokemon);
-
-    const typesHtml = types.map(type => `
-        <div class="pokemon-type-badge ${type}">
-            ${getTypeIcon(type)}
-            <span>${type}</span>
-        </div>
-    `).join('');
+    const typesHTML = pokemon.types.map(type =>
+            `<span class="type-badge type-${type.type.name}">${type.type.name.toUpperCase()}</span>`
+    ).join('');
 
     card.innerHTML = `
-        <div class="pokemon-badge">
-            <span>#${String(pokemon.id).padStart(3, '0')}</span>
-        </div>
-
-        <div class="pokemon-image-container">
-            <div class="pokemon-glow"></div>
-            <img src="${getImage(pokemon)}" alt="${pokemon.name}" class="pokemon-image">
-        </div>
-
-        <h3 class="pokemon-name">${pokemon.name}</h3>
-
-        <div class="pokemon-type-container">
-            ${typesHtml}
-        </div>
-
-        <div class="pokemon-stats-mini">
-            <div class="stat-mini">
-                <div class="stat-mini-label">HP</div>
-                <div class="stat-mini-value">${getStat(pokemon, 'hp')}</div>
+        <div class="pokemon-card-header" style="background-color: ${typeColor};">
+            <div class="pokemon-id">#${String(pokemon.id).padStart(3, '0')}</div>
+            <div class="pokemon-image-container">
+                <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}" class="pokemon-image">
             </div>
-            <div class="stat-mini">
-                <div class="stat-mini-label">ATK</div>
-                <div class="stat-mini-value">${getStat(pokemon, 'attack')}</div>
-            </div>
-            <div class="stat-mini">
-                <div class="stat-mini-label">DEF</div>
-                <div class="stat-mini-value">${getStat(pokemon, 'defense')}</div>
+        </div>
+        <div class="pokemon-card-body">
+            <h3 class="pokemon-name">${pokemon.name}</h3>
+            <div class="pokemon-types">
+                ${typesHTML}
             </div>
         </div>
     `;
+
+    card.addEventListener('click', () => openModal(pokemon));
 
     return card;
 }
 
-
-// ====================================
-// MODAL
-// ====================================
 function openModal(pokemon) {
-    const types = getPokemonTypes(pokemon);
+    const primaryType = pokemon.types[0]?.type.name || 'normal';
+    const typeColor = typeColors[primaryType] || '#A8A878';
 
-    modalContent.innerHTML = '';
-    modal.className = 'modal';
+    const typesHTML = pokemon.types.map(type =>
+            `<span class="type-badge type-${type.type.name}">${type.type.name.toUpperCase()}</span>`
+    ).join('');
 
-    // usar el primer tipo como base visual
-    modal.classList.add(types[0].toLowerCase());
+    const abilitiesHTML = pokemon.abilities.map(ability =>
+            `<span class="ability-badge">${ability.ability.name.replace('-', ' ')}</span>`
+    ).join('');
 
-    const typesBadges = types.map(type => `
-        <div class="pokemon-type-badge ${type}">
-            ${getTypeIcon(type)}
-            <span>${type}</span>
+    const statsHTML = pokemon.stats.map(stat => {
+        const percentage = Math.min((stat.base_stat / 255) * 100, 100);
+        return `
+            <div class="stat-item">
+                <div class="stat-header">
+                    <span class="stat-name">${stat.stat.name.replace('-', ' ')}</span>
+                    <span class="stat-number">${stat.base_stat}</span>
+                </div>
+                <div class="stat-bar-container">
+                    <div class="stat-bar" style="width: ${percentage}%; background-color: ${typeColor};"></div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    const backSprite = pokemon.sprites.back_default
+            ? `<img src="${pokemon.sprites.back_default}" alt="${pokemon.name} back">`
+            : '';
+
+    modalBody.innerHTML = `
+        <div class="modal-header" style="background-color: ${typeColor};">
+            <div class="modal-pokemon-id">#${String(pokemon.id).padStart(3, '0')}</div>
+            <h2 class="modal-pokemon-name">${pokemon.name}</h2>
+            <div class="modal-images">
+                <img src="${pokemon.sprites.front_default}" alt="${pokemon.name} front">
+                ${backSprite}
+            </div>
+            <div class="modal-types">
+                ${typesHTML}
+            </div>
         </div>
-    `).join('');
-
-    const content = document.createElement('div');
-    content.innerHTML = `
-        <div class="modal-header">
-            <div class="modal-title-section">
-                <h2>${pokemon.name}</h2>
-                <div class="modal-type-badges">
-                    ${typesBadges}
+        <div class="modal-body-content">
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <p class="stat-label">Altura</p>
+                    <p class="stat-value">${(pokemon.height / 10).toFixed(1)} m</p>
+                </div>
+                <div class="stat-box">
+                    <p class="stat-label">Peso</p>
+                    <p class="stat-value">${(pokemon.weight / 10).toFixed(1)} kg</p>
                 </div>
             </div>
-            <div class="modal-number">
-                <span>#${String(pokemon.id).padStart(3, '0')}</span>
-            </div>
-        </div>
-
-        <div class="modal-grid">
-            <div class="modal-left">
-                <div class="modal-image-container">
-                    <div class="modal-image-glow"></div>
-                    <img src="${getImage(pokemon)}" alt="${pokemon.name}" class="modal-image">
-                </div>
-
-                <div class="modal-physical-stats">
-                    <div class="physical-stat">
-                        <div class="physical-stat-label">Altura</div>
-                        <div class="physical-stat-value">${pokemon.height}</div>
-                    </div>
-                    <div class="physical-stat">
-                        <div class="physical-stat-label">Peso</div>
-                        <div class="physical-stat-value">${pokemon.weight}</div>
-                    </div>
+            <div>
+                <h3 class="section-title">Habilidades</h3>
+                <div class="abilities-list">
+                    ${abilitiesHTML}
                 </div>
             </div>
-
-            <div class="modal-right">
-                <h3 class="modal-stats-title">Estadísticas Base</h3>
-
-                ${renderStatRow(pokemon, 'hp', 'HP')}
-                ${renderStatRow(pokemon, 'attack', 'Ataque')}
-                ${renderStatRow(pokemon, 'defense', 'Defensa')}
-                ${renderStatRow(pokemon, 'speed', 'Velocidad')}
-
-                <div class="modal-abilities">
-                    <h4>Habilidades</h4>
-                    <div class="abilities-list">
-                        ${pokemon.abilities.map(a => `
-                            <div class="ability-badge">
-                                <span>${a.ability.name}</span>
-                            </div>
-                        `).join('')}
-                    </div>
+            <div>
+                <h3 class="section-title">Estadísticas</h3>
+                <div class="stats-list">
+                    ${statsHTML}
                 </div>
             </div>
         </div>
     `;
 
-    modalContent.appendChild(content);
-    modalOverlay.classList.add('active');
+    modal.style.display = 'block';
 }
 
-
-function renderStatRow(pokemon, statKey, label) {
-    const value = getStat(pokemon, statKey);
-    const percent = (value / 150) * 100;
-
-    return `
-        <div class="stat-row">
-            <div class="stat-header">
-                <span class="stat-label">${label}</span>
-                <span class="stat-value">${value}</span>
-            </div>
-            <div class="stat-bar-bg">
-                <div class="stat-bar-fill" style="width:${percent}%"></div>
-            </div>
-        </div>
-    `;
+function closeModal() {
+    modal.style.display = 'none';
 }
 
-function getPokemonTypes(pokemon) {
-    if (!pokemon.types || !pokemon.types.length) {
-        return ['normal'];
+function handleSearch(e) {
+    const searchTerm = e.target.value.toLowerCase().trim();
+
+    if (searchTerm === '') {
+        clearSearchBtn.style.display = 'none';
+        searchResults.textContent = '';
+        filteredPokemons = allPokemons;
+        pagination.style.display = 'flex';
+    } else {
+        clearSearchBtn.style.display = 'flex';
+        filteredPokemons = allPokemons.filter(pokemon => {
+            const matchesName = pokemon.name.toLowerCase().includes(searchTerm);
+            const matchesId = pokemon.id.toString().includes(searchTerm);
+            return matchesName || matchesId;
+        });
+
+        const count = filteredPokemons.length;
+        searchResults.textContent = `${count} resultado${count !== 1 ? 's' : ''} encontrado${count !== 1 ? 's' : ''}`;
+        pagination.style.display = 'none';
     }
 
-    return pokemon.types
-            .map(t => t?.type?.name)
-            .filter(Boolean);
+    renderPokemons();
 }
 
-
-// ====================================
-// CERRAR MODAL
-// ====================================
-function closeModalFunc() {
-    modalOverlay.classList.remove('active');
+function clearSearch() {
+    searchInput.value = '';
+    clearSearchBtn.style.display = 'none';
+    searchResults.textContent = '';
+    filteredPokemons = allPokemons;
+    pagination.style.display = 'flex';
+    renderPokemons();
 }
 
-closeModal.addEventListener('click', closeModalFunc);
-modalOverlay.addEventListener('click', e => {
-    if (e.target === modalOverlay)
-        closeModalFunc();
-});
+function changePage(newPage) {
+    if (newPage < 1 || newPage > totalPages)
+        return;
 
-// ====================================
-// FILTRO POKEMONES TIPO 
-// ====================================
-function filterPokemon() {
-    filteredPokemon = pokemonDatabase.filter(pokemon => {
-        const matchesSearch = pokemon.name
-                .toLowerCase()
-                .includes(currentSearch.toLowerCase());
+    currentPage = newPage;
+    searchInput.value = '';
+    clearSearchBtn.style.display = 'none';
+    searchResults.textContent = '';
 
-        const types = getPokemonTypes(pokemon);
-
-        const matchesType =
-                currentFilter === 'all' || types.includes(currentFilter);
-
-        return matchesSearch && matchesType;
-    });
-
-    renderPokemonCards();
+    fetchPokemons(currentPage);
+    window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
+function updatePagination() {
+    pageInfo.textContent = `Página ${currentPage} de ${totalPages}`;
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled = currentPage === totalPages;
+}
 
-// ====================================
-// EVENTOS
-// ====================================
-searchInput.addEventListener('input', e => {
-    currentSearch = e.target.value;
-    filterPokemon();
-});
-
-filterContainer.addEventListener('click', e => {
-    if (e.target.classList.contains('filter-btn')) {
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        e.target.classList.add('active');
-        currentFilter = e.target.dataset.type;
-        filterPokemon();
-    }
-});
-
-// ====================================
-// CARGA DE DATOS
-// ====================================
-
-async function loadPokemonFromDatabase() {
-    try {
-        const response = await fetch("/pokemon/pokemons"); // sin Authorization
-        if (!response.ok) {
-            throw new Error("Error en la petición: " + response.status);
-        }
-
-        const data = await response.json();
-        console.log("DATA BACKEND:", data);
-
-        pokemonDatabase = data;
-        filteredPokemon = [...pokemonDatabase];
-        renderPokemonCards();
-    } catch (error) {
-        console.error("Error al cargar datos:", error);
+function showLoading(show) {
+    if (show) {
+        loading.style.display = 'flex';
+        pokemonGrid.style.display = 'none';
+        pagination.style.display = 'none';
+        noResults.style.display = 'none';
+    } else {
+        loading.style.display = 'none';
+        pokemonGrid.style.display = 'grid';
+        pagination.style.display = 'flex';
     }
 }
 
-loadPokemonFromDatabase();
-
-// ====================================
-// ICONOS DE TIPO
-// ====================================
-function getTypeIcon(type) {
-    const icons = {
-        fire: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>',
-        water: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>',
-        grass: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>',
-        electric: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
-        psychic: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>',
-        rock: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>'
-    };
-
-    return icons[type] || '';
-}

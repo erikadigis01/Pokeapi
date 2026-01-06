@@ -1,93 +1,72 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokédex - Diseño Moderno</title>
-    <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-container">
-            <div class="header-title">
-                <svg class="sparkle-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                </svg>
-                <h1>Pokédex</h1>
-                <svg class="sparkle-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                </svg>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Pokédex</title>
+        <link rel="stylesheet" href="/css/styles.css">
+    </head>
+    <body>
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-content">
+                    <div class="header-title">
+                        <div class="pokeball">
+                            <div class="pokeball-inner"></div>
+                        </div>
+                        <h1>Pokédex</h1>
+                    </div>
+                    <p class="subtitle">Descubre información sobre todos los Pokémon</p>
+
+                    <!-- Search Bar -->
+                    <div class="search-container">
+                        <div class="search-wrapper">
+                            <input 
+                                type="text" 
+                                id="searchInput" 
+                                placeholder="Buscar por nombre o número..."
+                                class="search-input"
+                                >
+                            <button id="clearSearch" class="clear-btn" style="display: none;">×</button>
+                        </div>
+                        <p id="searchResults" class="search-results"></p>
+                    </div>
+                </div>
             </div>
 
-            <!-- Search Bar -->
-            <div class="search-container">
-                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <path d="m21 21-4.35-4.35"></path>
-                </svg>
-                <input 
-                    type="text" 
-                    id="searchInput" 
-                    placeholder="Buscar Pokémon..."
-                    class="search-input"
-                >
+            <!-- Loading -->
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Cargando Pokémon...</p>
             </div>
 
-            <!-- Type Filters -->
-            <div class="filter-container" id="filterContainer">
-                <button class="filter-btn active" data-type="all">Todos</button>
-                <button class="filter-btn" data-type="fire">Fuego</button>
-                <button class="filter-btn" data-type="water">Agua</button>
-                <button class="filter-btn" data-type="grass">Planta</button>
-                <button class="filter-btn" data-type="electric">Eléctrico</button>
-                <button class="filter-btn" data-type="psychic">Psíquico</button>
-                <button class="filter-btn" data-type="rock">Roca</button>
-                <button class="filter-btn" data-type="normal">Normal</button>
-                <button class="filter-btn" data-type="poison">Veneno</button>
-                <button class="filter-btn" data-type="flying">Volador</button>
-                <button class="filter-btn" data-type="bug">Bicho</button>
+            <!-- No Results -->
+            <div id="noResults" class="no-results" style="display: none;">
+                <p class="no-results-title">No se encontraron Pokémon</p>
+                <p class="no-results-text">Intenta con otro término de búsqueda</p>
+            </div>
+
+            <!-- Pokemon Grid -->
+            <div id="pokemonGrid" class="pokemon-grid"></div>
+
+            <!-- Pagination -->
+            <div id="pagination" class="pagination">
+                <button id="prevBtn" class="btn-pagination">← Anterior</button>
+                <span id="pageInfo" class="page-info">Página 1 de 1</span>
+                <button id="nextBtn" class="btn-pagination">Siguiente →</button>
             </div>
         </div>
-    </header>
 
-    <!-- Pokemon Grid -->
-    <main class="main-container">
-        <div class="pokemon-grid" id="pokemonGrid">
-            <!-- Las tarjetas de Pokémon se generarán dinámicamente aquí -->
-        </div>
-
-        <!-- No Results Message -->
-        <div class="no-results" id="noResults" style="display: none;">
-            <p class="no-results-title">No se encontraron Pokémon</p>
-            <p class="no-results-subtitle">Intenta con otro término de búsqueda</p>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-container">
-            <p class="footer-text">
-                Total de Pokémon encontrados: <span id="pokemonCount" class="footer-count">0</span>
-            </p>
-        </div>
-    </footer>
-
-    <!-- Modal -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal" id="modal">
-            <button class="modal-close" id="closeModal">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-
-            <div class="modal-content" id="modalContent">
-                <!-- El contenido del modal se generará dinámicamente -->
+        <!-- Modal -->
+        <div id="modal" class="modal" style="display: none;">
+            <div class="modal-overlay"></div>
+            <div class="modal-content">
+                <button class="modal-close">×</button>
+                <div id="modalBody"></div>
             </div>
         </div>
-    </div>
-    <script src="/js/script.js"></script>
-</body>
+
+        <script src="/js/script.js"></script>
+    </body>
 </html>

@@ -34,7 +34,7 @@ public class PokemonDTO {
     public PokemonDTO() {
     }
 
-    public PokemonDTO(Integer Id, String Name, Sprites Sprites, List<PokemonTypeDTO> types, double height, double weight, List<AbilityDTO> abilities) {
+    public PokemonDTO(Integer Id, String Name, Sprites Sprites, List<PokemonTypeDTO> types, double height, double weight, List<AbilityDTO> abilities, List<StatDTO> stats) {
         this.Id = Id;
         this.Name = Name;
         this.Sprites = Sprites;
@@ -42,7 +42,10 @@ public class PokemonDTO {
         this.height = height;
         this.weight = weight;
         this.abilities = abilities;
+        this.stats = stats;
     }
+    
+    
 
     public void setId(Integer Id) {
         this.Id = Id;
