@@ -44,8 +44,6 @@ public class PokemonDTO {
         this.abilities = abilities;
         this.stats = stats;
     }
-    
-    
 
     public void setId(Integer Id) {
         this.Id = Id;
@@ -114,24 +112,45 @@ public class PokemonDTO {
     public static class Sprites {
 
         @JsonProperty("front_default")
-        private String front_default;
+        private String frontDefault;
+
         @JsonProperty("front_shiny")
-        private String front_shiny;
+        private String frontShiny;
 
-        public String getFront_default() {
-            return front_default;
+        private Other other;
+
+        public String getFrontDefault() {
+            return frontDefault;
         }
 
-        public void setFront_default(String front_default) {
-            this.front_default = front_default;
+        public Other getOther() {
+            return other;
+        }
+    }
+
+    public static class Other {
+
+        private Showdown showdown;
+
+        public Showdown getShowdown() {
+            return showdown;
+        }
+    }
+
+    public static class Showdown {
+
+        @JsonProperty("front_default")
+        private String gif;
+
+        @JsonProperty("front_shiny")
+        private String shinyGif;
+
+        public String getGif() {
+            return gif;
         }
 
-        public String getFront_shiny() {
-            return front_shiny;
-        }
-
-        public void setFront_shiny(String front_shiny) {
-            this.front_shiny = front_shiny;
+        public String getShinyGif() {
+            return shinyGif;
         }
     }
 

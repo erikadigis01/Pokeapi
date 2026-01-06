@@ -119,14 +119,20 @@ function createPokemonCard(pokemon) {
     const typeColor = typeColors[primaryType] || '#A8A878';
 
     const typesHTML = pokemon.types.map(type =>
-            `<span class="type-badge type-${type.type.name}">${type.type.name.toUpperCase()}</span>`
+            `<span class="type-badge type-${type.type.name}">
+            ${type.type.name.toUpperCase()}
+        </span>`
     ).join('');
 
     card.innerHTML = `
         <div class="pokemon-card-header" style="background-color: ${typeColor};">
             <div class="pokemon-id">#${String(pokemon.id).padStart(3, '0')}</div>
             <div class="pokemon-image-container">
-                <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}" class="pokemon-image">
+                <img 
+                    src="${pokemon.sprites.front_default}" 
+                    alt="${pokemon.name}" 
+                    class="pokemon-image"
+                >
             </div>
         </div>
         <div class="pokemon-card-body">
@@ -138,20 +144,24 @@ function createPokemonCard(pokemon) {
     `;
 
     card.addEventListener('click', () => openModal(pokemon));
-
     return card;
 }
+
 
 function openModal(pokemon) {
     const primaryType = pokemon.types[0]?.type.name || 'normal';
     const typeColor = typeColors[primaryType] || '#A8A878';
 
     const typesHTML = pokemon.types.map(type =>
-            `<span class="type-badge type-${type.type.name}">${type.type.name.toUpperCase()}</span>`
+        `<span class="type-badge type-${type.type.name}">
+            ${type.type.name.toUpperCase()}
+        </span>`
     ).join('');
 
     const abilitiesHTML = pokemon.abilities.map(ability =>
-            `<span class="ability-badge">${ability.ability.name.replace('-', ' ')}</span>`
+        `<span class="ability-badge">
+            ${ability.ability.name.replace('-', ' ')}
+        </span>`
     ).join('');
 
     const statsHTML = pokemon.stats.map(stat => {
@@ -163,28 +173,33 @@ function openModal(pokemon) {
                     <span class="stat-number">${stat.base_stat}</span>
                 </div>
                 <div class="stat-bar-container">
-                    <div class="stat-bar" style="width: ${percentage}%; background-color: ${typeColor};"></div>
+                    <div class="stat-bar" 
+                         style="width:${percentage}%; background-color:${typeColor};">
+                    </div>
                 </div>
             </div>
         `;
     }).join('');
 
-    const backSprite = pokemon.sprites.back_default
-            ? `<img src="${pokemon.sprites.back_default}" alt="${pokemon.name} back">`
-            : '';
-
     modalBody.innerHTML = `
         <div class="modal-header" style="background-color: ${typeColor};">
-            <div class="modal-pokemon-id">#${String(pokemon.id).padStart(3, '0')}</div>
-            <h2 class="modal-pokemon-name">${pokemon.name}</h2>
-            <div class="modal-images">
-                <img src="${pokemon.sprites.front_default}" alt="${pokemon.name} front">
-                ${backSprite}
+            <div class="modal-pokemon-id">
+                #${String(pokemon.id).padStart(3, '0')}
             </div>
+            <h2 class="modal-pokemon-name">${pokemon.name}</h2>
+
+            <div class="modal-images">
+                <img 
+                    src="${getPokemonSprite(pokemon, { gif: true })}" 
+                    alt="${pokemon.name} gif"
+                >
+            </div>
+
             <div class="modal-types">
                 ${typesHTML}
             </div>
         </div>
+
         <div class="modal-body-content">
             <div class="stats-grid">
                 <div class="stat-box">
@@ -196,23 +211,18 @@ function openModal(pokemon) {
                     <p class="stat-value">${(pokemon.weight / 10).toFixed(1)} kg</p>
                 </div>
             </div>
-            <div>
-                <h3 class="section-title">Habilidades</h3>
-                <div class="abilities-list">
-                    ${abilitiesHTML}
-                </div>
-            </div>
-            <div>
-                <h3 class="section-title">Estadísticas</h3>
-                <div class="stats-list">
-                    ${statsHTML}
-                </div>
-            </div>
+
+            <h3 class="section-title">Habilidades</h3>
+            <div class="abilities-list">${abilitiesHTML}</div>
+
+            <h3 class="section-title">Estadísticas</h3>
+            <div class="stats-list">${statsHTML}</div>
         </div>
     `;
 
     modal.style.display = 'block';
 }
+
 
 function closeModal() {
     modal.style.display = 'none';
@@ -282,4 +292,34 @@ function showLoading(show) {
         pagination.style.display = 'flex';
     }
 }
+
+function getPokemonSprite(pokemon, { gif = false, shiny = false } = {}) {
+
+    if (gif) {
+        if (shiny) {
+            return (
+                    pokemon.sprites?.other?.showdown?.front_shiny ||
+                    pokemon.sprites?.front_shiny ||
+                    pokemon.sprites?.front_default
+                    );
+        }
+
+        return (
+                pokemon.sprites?.other?.showdown?.front_default ||
+                pokemon.sprites?.front_default
+                );
+    }
+
+    // PNG normal
+    if (shiny) {
+        return (
+                pokemon.sprites?.front_shiny ||
+                pokemon.sprites?.front_default
+                );
+    }
+
+    return pokemon.sprites?.front_default;
+}
+
+
 
