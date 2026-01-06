@@ -1,8 +1,9 @@
 package com.Pokemon.pokemon.DTO;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 
-//@JsonProperty("id")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PokemonListResponse {
 
     private int count;

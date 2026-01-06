@@ -1,6 +1,6 @@
 package com.Pokemon.pokemon.DTO;
 
-class TypeDTO {
+public class TypeDTO {
 
     private String name;
     private String url;
