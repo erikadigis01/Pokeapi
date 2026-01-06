@@ -12,5 +12,9 @@ public class PokemonController {
     public String index() {
         return "Index";
     }
+    @GetMapping("/perfil")
+    public String Perfil() {
+        return "Perfil";
+    }
 
 }
