@@ -153,13 +153,13 @@ function openModal(pokemon) {
     const typeColor = typeColors[primaryType] || '#A8A878';
 
     const typesHTML = pokemon.types.map(type =>
-        `<span class="type-badge type-${type.type.name}">
+            `<span class="type-badge type-${type.type.name}">
             ${type.type.name.toUpperCase()}
         </span>`
     ).join('');
 
     const abilitiesHTML = pokemon.abilities.map(ability =>
-        `<span class="ability-badge">
+            `<span class="ability-badge">
             ${ability.ability.name.replace('-', ' ')}
         </span>`
     ).join('');
@@ -190,7 +190,7 @@ function openModal(pokemon) {
 
             <div class="modal-images">
                 <img 
-                    src="${getPokemonSprite(pokemon, { gif: true })}" 
+                    src="${getPokemonSprite(pokemon, {gif: true})}" 
                     alt="${pokemon.name} gif"
                 >
             </div>
@@ -216,110 +216,189 @@ function openModal(pokemon) {
             <div class="abilities-list">${abilitiesHTML}</div>
 
             <h3 class="section-title">Estadísticas</h3>
-            <div class="stats-list">${statsHTML}</div>
+            <canvas id="statsChart" width="300" height="300"></canvas>
+
         </div>
     `;
 
     modal.style.display = 'block';
-}
+    requestAnimationFrame(() => {
+        renderStatsChart(pokemon, typeColor);
+
+    });
+    }
 
 
-function closeModal() {
-    modal.style.display = 'none';
-}
 
-function handleSearch(e) {
-    const searchTerm = e.target.value.toLowerCase().trim();
+    function closeModal() {
+        modal.style.display = 'none';
+    }
 
-    if (searchTerm === '') {
+    function handleSearch(e) {
+        const searchTerm = e.target.value.toLowerCase().trim();
+
+        if (searchTerm === '') {
+            clearSearchBtn.style.display = 'none';
+            searchResults.textContent = '';
+            filteredPokemons = allPokemons;
+            pagination.style.display = 'flex';
+        } else {
+            clearSearchBtn.style.display = 'flex';
+            filteredPokemons = allPokemons.filter(pokemon => {
+                const matchesName = pokemon.name.toLowerCase().includes(searchTerm);
+                const matchesId = pokemon.id.toString().includes(searchTerm);
+                return matchesName || matchesId;
+            });
+
+            const count = filteredPokemons.length;
+            searchResults.textContent = `${count} resultado${count !== 1 ? 's' : ''} encontrado${count !== 1 ? 's' : ''}`;
+            pagination.style.display = 'none';
+        }
+
+        renderPokemons();
+    }
+
+    function clearSearch() {
+        searchInput.value = '';
         clearSearchBtn.style.display = 'none';
         searchResults.textContent = '';
         filteredPokemons = allPokemons;
         pagination.style.display = 'flex';
-    } else {
-        clearSearchBtn.style.display = 'flex';
-        filteredPokemons = allPokemons.filter(pokemon => {
-            const matchesName = pokemon.name.toLowerCase().includes(searchTerm);
-            const matchesId = pokemon.id.toString().includes(searchTerm);
-            return matchesName || matchesId;
-        });
-
-        const count = filteredPokemons.length;
-        searchResults.textContent = `${count} resultado${count !== 1 ? 's' : ''} encontrado${count !== 1 ? 's' : ''}`;
-        pagination.style.display = 'none';
+        renderPokemons();
     }
 
-    renderPokemons();
-}
+    function changePage(newPage) {
+        if (newPage < 1 || newPage > totalPages)
+            return;
 
-function clearSearch() {
-    searchInput.value = '';
-    clearSearchBtn.style.display = 'none';
-    searchResults.textContent = '';
-    filteredPokemons = allPokemons;
-    pagination.style.display = 'flex';
-    renderPokemons();
-}
+        currentPage = newPage;
+        searchInput.value = '';
+        clearSearchBtn.style.display = 'none';
+        searchResults.textContent = '';
 
-function changePage(newPage) {
-    if (newPage < 1 || newPage > totalPages)
-        return;
-
-    currentPage = newPage;
-    searchInput.value = '';
-    clearSearchBtn.style.display = 'none';
-    searchResults.textContent = '';
-
-    fetchPokemons(currentPage);
-    window.scrollTo({top: 0, behavior: 'smooth'});
-}
-
-function updatePagination() {
-    pageInfo.textContent = `Página ${currentPage} de ${totalPages}`;
-    prevBtn.disabled = currentPage === 1;
-    nextBtn.disabled = currentPage === totalPages;
-}
-
-function showLoading(show) {
-    if (show) {
-        loading.style.display = 'flex';
-        pokemonGrid.style.display = 'none';
-        pagination.style.display = 'none';
-        noResults.style.display = 'none';
-    } else {
-        loading.style.display = 'none';
-        pokemonGrid.style.display = 'grid';
-        pagination.style.display = 'flex';
+        fetchPokemons(currentPage);
+        window.scrollTo({top: 0, behavior: 'smooth'});
     }
-}
 
-function getPokemonSprite(pokemon, { gif = false, shiny = false } = {}) {
+    function updatePagination() {
+        pageInfo.textContent = `Página ${currentPage} de ${totalPages}`;
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage === totalPages;
+    }
 
-    if (gif) {
+    function showLoading(show) {
+        if (show) {
+            loading.style.display = 'flex';
+            pokemonGrid.style.display = 'none';
+            pagination.style.display = 'none';
+            noResults.style.display = 'none';
+        } else {
+            loading.style.display = 'none';
+            pokemonGrid.style.display = 'grid';
+            pagination.style.display = 'flex';
+        }
+    }
+
+    function getPokemonSprite(pokemon, { gif = false, shiny = false } = {}) {
+
+        if (gif) {
+            if (shiny) {
+                return (
+                        pokemon.sprites?.other?.showdown?.front_shiny ||
+                        pokemon.sprites?.front_shiny ||
+                        pokemon.sprites?.front_default
+                        );
+            }
+
+            return (
+                    pokemon.sprites?.other?.showdown?.front_default ||
+                    pokemon.sprites?.front_default
+                    );
+        }
+
+        // PNG normal
         if (shiny) {
             return (
-                    pokemon.sprites?.other?.showdown?.front_shiny ||
                     pokemon.sprites?.front_shiny ||
                     pokemon.sprites?.front_default
                     );
         }
 
-        return (
-                pokemon.sprites?.other?.showdown?.front_default ||
-                pokemon.sprites?.front_default
-                );
+        return pokemon.sprites?.front_default;
     }
 
-    // PNG normal
-    if (shiny) {
-        return (
-                pokemon.sprites?.front_shiny ||
-                pokemon.sprites?.front_default
-                );
+    let statsChartInstance = null;
+
+    function renderStatsChart(pokemon, color) {
+        const ctx = document.getElementById('statsChart');
+
+        if (!ctx)
+            return;
+
+        if (statsChartInstance) {
+            statsChartInstance.destroy();
+        }
+
+        const labels = pokemon.stats.map(stat =>
+            stat.stat.name.replace('-', ' ').toUpperCase()
+        );
+
+        const values = pokemon.stats.map(stat => stat.base_stat);
+
+        statsChartInstance = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels,
+                datasets: [{
+                        label: 'Base Stats',
+                        data: values,
+                        backgroundColor: hexToRgba(color, 0.25),
+                        borderColor: color,
+                        pointBackgroundColor: color,
+                        pointBorderColor: '#fff',
+                        borderWidth: 2
+                    }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        suggestedMax: 150,
+                        ticks: {
+                            stepSize: 25,
+                            backdropColor: 'transparent'
+                        },
+                        grid: {
+                            color: 'rgba(255,255,255,0.2)'
+                        },
+                        angleLines: {
+                            color: 'rgba(255,255,255,0.2)'
+                        },
+                        pointLabels: {
+                            color: '#fff',
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
     }
 
-    return pokemon.sprites?.front_default;
-}
+    function hexToRgba(hex, alpha = 1) {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
 
 
 
