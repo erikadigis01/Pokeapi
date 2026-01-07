@@ -7,31 +7,47 @@
         <link rel="stylesheet" href="/css/styles.css">
     </head>
     <body>
-        <div class="container">
-            <!-- Header -->
-            <div class="header">
-                <div class="header-content">
-                    <div class="header-title">
-                        <div class="pokeball">
-                            <div class="pokeball-inner"></div>
-                        </div>
-                        <h1>Pokédex</h1>
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <div class="navbar-brand">
+                    <div class="pokeball-small">
+                        <div class="pokeball-small-inner"></div>
                     </div>
-                    <p class="subtitle">Descubre información sobre todos los Pokémon</p>
+                    <span class="navbar-title">Pokédex</span>
+                </div>
 
-                    <!-- Search Bar -->
-                    <div class="search-container">
-                        <div class="search-wrapper">
-                            <input 
-                                type="text" 
-                                id="searchInput" 
-                                placeholder="Buscar por nombre o número..."
-                                class="search-input"
-                                >
-                            <button id="clearSearch" class="clear-btn" style="display: none;">×</button>
-                        </div>
-                        <p id="searchResults" class="search-results"></p>
+                <div class="navbar-search">
+                    <input 
+                        type="text" 
+                        id="navSearchInput" 
+                        placeholder="Buscar por nombre o número..."
+                        class="navbar-search-input"
+                        >
+                    <button id="navClearSearch" class="nav-clear-btn" style="display: none;">×</button>
+                </div>
+
+                <div class="navbar-user">
+                    <div class="user-avatar">
+                        <span>👤</span>
                     </div>
+                    <span class="user-name" id="userName">Usuario</span>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <!-- Type Filter Section -->
+            <div class="filter-section">
+                <div class="filter-content">
+                    <h2 class="filter-title">Filtrar por tipo</h2>
+                    <div class="type-filters" id="typeFilters">
+                        <button class="type-filter-btn active" data-type="all" onclick="filterByType('all')">
+                            Todos
+                        </button>
+
+                    </div>
+                    <div id="filterResults" class="filter-results"></div>
                 </div>
             </div>
 
@@ -44,7 +60,7 @@
             <!-- No Results -->
             <div id="noResults" class="no-results" style="display: none;">
                 <p class="no-results-title">No se encontraron Pokémon</p>
-                <p class="no-results-text">Intenta con otro término de búsqueda</p>
+                <p class="no-results-text">Intenta con otro término de búsqueda o filtro</p>
             </div>
 
             <!-- Pokemon Grid -->
@@ -66,8 +82,9 @@
                 <div id="modalBody"></div>
             </div>
         </div>
-        
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
         <script src="/js/script.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     </body>
 </html>

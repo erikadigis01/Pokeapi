@@ -24,6 +24,9 @@ public class PokemonDTO {
 
     @JsonProperty("weight")
     private double weight;
+    
+    @JsonProperty
+    private Species species;
 
     @JsonProperty("abilities")
     private List<AbilityDTO> abilities;
