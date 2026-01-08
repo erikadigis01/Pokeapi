@@ -1,117 +1,163 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil de Entrenador Pokémon - Ash Ketchum</title>
-    <link rel="stylesheet" href="/css/perfil.css">
-    <!-- Lucide Icons CDN -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-</head>
-<body>
-    <div class="profile-container">
-        <!-- Profile Header Card -->
-        <div class="profile-header-card">
-            <!-- Decorative elements -->
-            <div class="decorative-circle decorative-circle-top"></div>
-            <div class="decorative-circle decorative-circle-bottom"></div>
-            
-            <div class="profile-content">
-                <!-- Avatar Section -->
-                <div class="avatar-container">
-                    <div class="avatar">
-                        <img src="https://images.unsplash.com/photo-1740252117044-2af197eea287?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwb2tlbW9uJTIwdHJhaW5lciUyMGF2YXRhcnxlbnwxfHx8fDE3Njc2NTUwODR8MA&ixlib=rb-4.1.0&q=80&w=1080" alt="Ash Ketchum">
-                    </div>
-                    <div class="trophy-badge">
-                        <i data-lucide="trophy"></i>
-                    </div>
-                </div>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Perfil</title>
+        <link rel="stylesheet" th:href="@{/css/perfil.css}">
+        <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    </head>
+    <body>
+        <!--HEADER-->
+        <div class="header sticky-header">
+            <div class="menu-bar">
+              <h1 class="titulo-pokemon">Pokédex</h1>
 
-                <!-- Profile Info -->
-                <div class="profile-info">
-                    <div>
-                        <h1 class="trainer-name">Ash Ketchum</h1>
-                        <div class="info-badges">
-                            <div class="info-badge">
-                                <i data-lucide="map-pin"></i>
-                                <span>Pueblo Paleta</span>
-                            </div>
-                            <div class="info-badge">
-                                <i data-lucide="award"></i>
-                                <span>8 Medallas</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="stats-cards">
-                        <div class="stat-card stat-level">
-                            <div class="stat-label">
-                                <i data-lucide="zap"></i>
-                                Nivel
-                            </div>
-                            <div class="stat-value">42</div>
-                        </div>
-                        <div class="stat-card stat-member">
-                            <div class="stat-label">
-                                <i data-lucide="star"></i>
-                                Miembro desde
-                            </div>
-                            <div class="stat-member-value">Enero 2020</div>
-                        </div>
-                    </div>
-                </div>
+              <div class="menu-right">
+               <button type="submit" class="btn-submit">
+                    Logout
+               </button>
+              </div>
             </div>
         </div>
-
-        <!-- Favorite Pokemon Section -->
-        <div class="favorite-section">
-            <div class="section-header">
-                <i data-lucide="heart" class="heart-icon"></i>
-                <h2>Pokémon Favoritos</h2>
+        <!--PERFIL POKEMON-->
+        <div class="perfil-container">
+        <!-- Datos del Maestro Pokémon -->
+        <section class="perfil-info">
+          <img src="https://static.wikia.nocookie.net/universecw/images/0/0f/Ash_Ketchum.png/revision/latest?cb=20201216120309&path-prefix=es" alt="Maestro Pokémon" class="perfil-img">
+          <div class="perfil-datos">
+            <h2 class="perfil-nombre"><span th:text="${email}"></span></h2>
+            <div class="badges">
+                <span class="badge badge-region">Maestro Pokémon</span>
+                <span class="badge badge-region">Región: Kanto</span>
+              </div>
+                <button class="btn-social">
+                    Editar Perfil
+                </button>
+          </div>
+          <div class="perfil-stats">
+            <div class="stat-item rojo">
+              <span class="stat-label">Batallas Ganadas</span>
+              <div class="stat-bar">
+                <div class="fill" style="width: 80%;"></div>
+              </div>
             </div>
 
-            <div class="pokemon-grid">
-                <main class="main-container">
-                    <div class="pokemon-grid" id="pokemonGrid">
-                        <!-- Las tarjetas de Pokémon se generarán dinámicamente aquí -->
-                    </div>
-
-                    <!-- No Results Message -->
-                    <div class="no-results" id="noResults" style="display: none;">
-                        <p class="no-results-title">No se encontraron Pokémon</p>
-                        <p class="no-results-subtitle">Intenta con otro término de búsqueda</p>
-                    </div>
-                </main>
+            <div class="stat-item amarillo">
+              <span class="stat-label">Velocidad</span>
+              <div class="stat-bar">
+                <div class="fill" style="width: 65%;"></div>
+              </div>
             </div>
+
+            <div class="stat-item azul">
+              <span class="stat-label">Pokémon Capturados</span>
+              <div class="stat-bar">
+                <div class="fill" style="width: 90%;"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+        <!--CARTAS POKEMON FAVORITAS-->
+        <div class="favoritos">
+            <h3>Pokémones Favoritos</h3>
         </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script th:href="@{/js/script.js}"></script>
+        <!-- Modal oculto -->
+        <div id="modal-editar" class="modal">
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Editar Perfil</h2>
+            <form>
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input
+                        type="text"
+                        id="nombre"
+                        name="nombre"
+                        placeholder="Ash"
+                        required
+                        />
+                </div>
 
-        <!-- Stats Section -->
-        <div class="stats-section-card">
-            <h3 class="stats-title">Estadísticas del Entrenador</h3>
-            <div class="stats-grid">
-                <div class="stat-item stat-blue">
-                    <div class="stat-number">150</div>
-                    <div class="stat-description">Pokémon Capturados</div>
+                <!-- Apellido Paterno -->
+                <div class="form-group">
+                    <label for="apellidoPaterno">Apellido Paterno</label>
+                    <input
+                        type="text"
+                        id="apellidoPaterno"
+                        name="apellidoPaterno"
+                        placeholder="Ketchum"
+                        required
+                        />
                 </div>
-                <div class="stat-item stat-green">
-                    <div class="stat-number">234</div>
-                    <div class="stat-description">Batallas Ganadas</div>
+
+                <!-- Apellido Materno -->
+                <div class="form-group">
+                    <label for="apellidoMaterno">Apellido Materno</label>
+                    <input
+                        type="text"
+                        id="apellidoMaterno"
+                        name="apellidoMaterno"
+                        placeholder="López"
+                        required
+                        />
                 </div>
-                <div class="stat-item stat-purple">
-                    <div class="stat-number">42</div>
-                    <div class="stat-description">Pokémon Evolucionados</div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="entrenador@pokemon.com"
+                        required
+                        />
                 </div>
-                <div class="stat-item stat-orange">
-                    <div class="stat-number">18</div>
-                    <div class="stat-description">Gimnasios Visitados</div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="••••••••"
+                        required
+                        />
                 </div>
-            </div>
+
+              <button type="submit" class="btn-submit">Guardar</button>
+            </form>
+          </div>
         </div>
-    </div>
-    <script src="/js/script.js"></script>
-    <script>
-        // Initialize Lucide icons
-        lucide.createIcons();
-    </script>
-</body>
+        <script th:inline="javascript">
+            // Obtener elementos
+            const modal = document.getElementById("modal-editar");
+            const btn = document.querySelector(".btn-social");
+            const span = document.querySelector(".close");
+
+            // Abrir modal al hacer clic en el botón
+            btn.onclick = function() {
+              modal.style.display = "block";
+            }
+
+            // Cerrar modal al hacer clic en la X
+            span.onclick = function() {
+              modal.style.display = "none";
+            }
+
+            // Cerrar modal al hacer clic fuera del contenido
+            window.onclick = function(event) {
+              if (event.target == modal) {
+                modal.style.display = "none";
+              }
+            }
+        </script>
+
+    </body>
 </html>

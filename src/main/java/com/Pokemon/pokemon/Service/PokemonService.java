@@ -25,7 +25,7 @@ public class PokemonService {
     @PostConstruct
     public void loadAllPokemons() {
 
-        String url = BASE_URL + "?limit=2000&offset=0";
+        String url = BASE_URL + "?limit=20&offset=0";
         PokemonListResponse response =
                 restTemplate.getForObject(url, PokemonListResponse.class);
 
