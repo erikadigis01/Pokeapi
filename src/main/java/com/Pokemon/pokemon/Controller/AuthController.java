@@ -120,7 +120,11 @@ public class AuthController {
             Map body = response.getBody();
             if (body != null && body.containsKey("token")) {
                 String token = (String) body.get("token"); 
-                session.setAttribute("jwt", token);
+                //se manda el atributo al index
+                //session.setAttribute("jwt", token);
+                //extraer el nombre de usuario o correo
+                String userEmail = jwtUtil.extraerUsername(token);
+                redirectAttributes.addFlashAttribute("userEmail", userEmail);
                 return "redirect:/pokedex"; 
             } else {
                 redirectAttributes.addFlashAttribute("error", "Correo o contraseña incorrectos");

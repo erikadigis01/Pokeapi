@@ -56,7 +56,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
         )
         .exceptionHandling(ex -> ex
             .authenticationEntryPoint((request, response, authException) -> {
-                response.sendRedirect("/login");
+                response.sendRedirect("/pokedex");
             })
         )
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

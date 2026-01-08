@@ -31,7 +31,7 @@
                     <!-- Icono Pikachu -->
                     <div class="pikachu-icon">⚡</div>
 
-                    <form id="loginForm" >
+                    <form id="loginForm" class="" th:action="@{/login}" method="post">
                         <!-- Email -->
                         <div class="form-group">
                             <label for="email">Email</label>
@@ -113,30 +113,30 @@
             </div>
         </div>
         <script> 
-            console.log("Script cargado");
-            document.getElementById("loginForm")
-                    .addEventListener("submit", async (event) => {
-                        event.preventDefault(); 
-                        const email = document.getElementById("email").value; 
-                        const password = document.getElementById("password").value; 
-                        try { 
-                            const response = await fetch("http://localhost:8080/auth/login", { 
-                                method: "POST", 
-                                headers: { "Content-Type": "application/json" }, 
-                                body: JSON.stringify({ email, password }) }); 
-                            const data = await response.json();
-                            if (data.status === "success") { 
-                                localStorage.setItem("jwt", data.token);
-                                window.location.href = "/pokedex";  
-                            } 
-                            else { 
-                                alert(data.message || "Error en login"); 
-                            } 
-                        } catch (error) { 
-                            console.error("Error en login:", error); 
-                            alert("Error de conexión con el servidor"); 
-                        } 
-                    }); 
+//            console.log("Script cargado");
+//            document.getElementById("loginForm")
+//                    .addEventListener("submit", async (event) => {
+//                        event.preventDefault(); 
+//                        const email = document.getElementById("email").value; 
+//                        const password = document.getElementById("password").value; 
+//                        try { 
+//                            const response = await fetch("http://localhost:8080/auth/login", { 
+//                                method: "POST", 
+//                                headers: { "Content-Type": "application/json" }, 
+//                                body: JSON.stringify({ email, password }) }); 
+//                            const data = await response.json();
+//                            if (data.status === "success") { 
+//                                localStorage.setItem("jwt", data.token);
+//                                window.location.href = "/pokedex";  
+//                            } 
+//                            else { 
+//                                alert(data.message || "Error en login"); 
+//                            } 
+//                        } catch (error) { 
+//                            console.error("Error en login:", error); 
+//                            alert("Error de conexión con el servidor"); 
+//                        } 
+//                    }); 
         </script>
        </body>
 </html>
