@@ -121,7 +121,7 @@ public class AuthController {
             if (body != null && body.containsKey("token")) {
                 String token = (String) body.get("token"); 
                 //se manda el atributo al index
-                //session.setAttribute("jwt", token);
+                session.setAttribute("token", token);
                 //extraer el nombre de usuario o correo
                 String userEmail = jwtUtil.extraerUsername(token);
                 redirectAttributes.addFlashAttribute("userEmail", userEmail);

@@ -26,6 +26,7 @@ const pokemonTypes = Object.keys(typeColors);
 // ======================
 // State
 // ======================
+let favoritosIds = [];
 let currentPage = 0; // backend usa 0-based
 let totalPages = 0;
 let currentTypeFilter = 'all';
@@ -34,16 +35,8 @@ const pokemonsPerPage = 20;
 
 const HEART_EMPTY = `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="www.w3.org"><path d="M9 2H5v2H3v2H1v6h2v2h2v2h2v2h2v2h2v2h4v-2h2v-2h2v-2h2v-2h2v-2h2V6h-2V4h-2V2h-4v2h-2v2h-2V4H9V2zm0 2v2h2v2h2V6h2V4h2v2h2v6h-2v2h-2v2h-2v2h-2v2h-2v-2H9v-2H7v-2H5v-2H3V6h2V4h4z" fill="currentColor"/></svg>`;
 const HEART_FULL = `<svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" xmlns="www.w3.org"><path d="M2 6v6h2v2h2v2h2v2h2v2h4v-2h2v-2h2v-2h2v-2h2V6h-2V4h-2V2h-4v2h-2v2h-2V4H9V2H5v2H3v2H2z" /></svg>`;
-
-//Provisional funcion de favoritos, borrar despues
-// Simulamos la BD usando el almacenamiento del navegador
-let favoritosProvisionales = JSON.parse(localStorage.getItem('pokemon_favs')) || [];
-
-function esFavorito(id) {
-    return favoritosProvisionales.includes(id);
-}
-
-
+// 
+// 
 // ======================
 // DOM
 // ======================
@@ -65,9 +58,26 @@ const userName = document.getElementById('userName');
 // ======================
 // Init
 // ======================
-initializeTypeFilters();
-fetchPokemons(currentPage);
-loadUserName();
+
+async function initApp() {
+    try {
+        initializeTypeFilters();
+        loadUserName();
+
+        // ⏳ esperamos favoritos
+        favoritosIds = await cargarFavoritos();
+
+        // 🎮 cargamos pokemons ya con favoritos
+        await fetchPokemons(currentPage);
+
+    } catch (err) {
+        console.error('Error inicializando app', err);
+    }
+}
+
+
+document.addEventListener('DOMContentLoaded', initApp);
+
 
 // ======================
 // Events
@@ -114,7 +124,6 @@ async function fetchPokemons(page = 0, size = 20, tipe = 'all') {
         let url = `/pokemon/pokemons?page=${page}&size=${pokemonsPerPage}`;
 
         if (search) {
-            // si es número → number, si no → name
             if (!isNaN(search)) {
                 url += `&number=${search}`;
             } else {
@@ -131,7 +140,7 @@ async function fetchPokemons(page = 0, size = 20, tipe = 'all') {
         allPokemons = data.content;
         totalPages = data.totalPages;
 
-        renderPokemons(allPokemons);
+        renderPokemons(allPokemons, favoritosIds);
         updatePagination(data);
 
     } catch (err) {
@@ -158,7 +167,7 @@ function updateFilterResults() {
 // ======================
 // Render cards
 // ======================
-function renderPokemons(pokemons) {
+function renderPokemons(pokemons, favoritosIds) {
     pokemonGrid.innerHTML = '';
 
     if (!pokemons.length) {
@@ -170,7 +179,7 @@ function renderPokemons(pokemons) {
 
     pokemons.forEach(p => {
         const primaryType = p.types[0];
-        const pokemonEsFavorito = esFavorito(p.id);
+        const pokemonEsFavorito = favoritosIds.includes(p.id);
 
         const card = document.createElement('div');
         card.className = 'pokemon-card';
@@ -188,25 +197,47 @@ function renderPokemons(pokemons) {
                     <img src="${p.image}" class="pokemon-image">
                 </div>
             </div>
+
             <div class="pokemon-card-body">
-                <h3 class="pokemon-name-card">${p.name}</h3>
+                <h3 class="pokemon-name-card">${p.name.toUpperCase()}</h3>
+
                 <div class="pokemon-types">
                     ${typesHTML}
                 </div>
+
                 <button
                     class="btn-favorite ${pokemonEsFavorito ? 'active' : ''}"
                     data-id="${p.id}"
+                    aria-label="Agregar a favoritos"
                 >
                     ${pokemonEsFavorito ? HEART_FULL : HEART_EMPTY}
                 </button>
             </div>
         `;
 
+        // Click card → modal
         card.addEventListener('click', (e) => {
             if (e.target.closest('.btn-favorite'))
                 return;
-
             openModal(p.name);
+        });
+
+        // Click favorito → backend
+        const btnFavorite = card.querySelector('.btn-favorite');
+        btnFavorite.addEventListener('click', async (e) => {
+            e.stopPropagation();
+
+            const pokemonId = Number(btnFavorite.dataset.id);
+            const esFavorito = await toggleFavorito(pokemonId);
+
+            if (esFavorito) {
+                favoritosIds.push(pokemonId);
+            } else {
+                favoritosIds = favoritosIds.filter(id => id !== pokemonId);
+            }
+
+            btnFavorite.classList.toggle('active', esFavorito);
+            btnFavorite.innerHTML = esFavorito ? HEART_FULL : HEART_EMPTY;
         });
 
         pokemonGrid.appendChild(card);
@@ -498,28 +529,36 @@ async function loadUserName() {
 // Favoritos
 // ======================
 
-pokemonGrid.addEventListener('click', (e) => {
-    const btn = e.target.closest('.btn-favorite');
-    if (!btn)
-        return;
+async function toggleFavorito(pokemonId) {
+    const idUsuario = 1;
 
-    e.stopPropagation();
+    const res = await fetch(
+        `/favoritos/toggle?idUsuario=${idUsuario}&idPokemon=${pokemonId}`,
+        { method: 'POST' }
+    );
 
-    const pokemonId = parseInt(btn.dataset.id);
+    const data = await res.json();
+    return data.favorito;
+}
 
-    btn.classList.toggle('active');
-    const ahoraEsFavorito = btn.classList.contains('active');
 
-    btn.innerHTML = ahoraEsFavorito ? HEART_FULL : HEART_EMPTY;
+async function cargarFavoritos() {
+    const usuarioId = 1;
 
-    if (ahoraEsFavorito) {
-        favoritosProvisionales.push(pokemonId);
-    } else {
-        favoritosProvisionales = favoritosProvisionales.filter(id => id !== pokemonId);
+    const res = await fetch(`/favoritos/${usuarioId}`);
+
+    const text = await res.text();
+    console.log("Respuesta favoritos:", text);
+
+    if (!res.ok) {
+        throw new Error("Error backend favoritos");
     }
 
-    localStorage.setItem('pokemon_favs', JSON.stringify(favoritosProvisionales));
-});
+    const favoritos = JSON.parse(text);
+    return favoritos.map(f => f.idPokemon);
+}
+
+
 
 
 
