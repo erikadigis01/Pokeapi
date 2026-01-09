@@ -35,7 +35,7 @@
         <section class="perfil-info">
           <img src="https://static.wikia.nocookie.net/universecw/images/0/0f/Ash_Ketchum.png/revision/latest?cb=20201216120309&path-prefix=es" alt="Maestro Pokémon" class="perfil-img">
           <div class="perfil-datos">
-            <h2 class="perfil-nombre"><span th:text="${email}"></span></h2>
+            <h2 class="perfil-nombre"><span th:text="${usuario.nombre}"></span></h2>
             <div class="badges">
                 <span class="badge badge-region">Maestro Pokémon</span>
                 <span class="badge badge-region">Región: Kanto</span>
@@ -79,14 +79,17 @@
           <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Editar Perfil</h2>
-            <form>
+            <form th:action="@{/pokedex/detail}" th:object="${usuario}" method="post">
+                 <input type="hidden" name="idUsuario" th:value="${id}" th:field="*{id}" id="idUsuario">
                 <div class="form-group">
                     <label for="nombre">Nombre</label>
                     <input
                         type="text"
                         id="nombre"
                         name="nombre"
-                        placeholder="Ash"
+                        th:field="*{nombre}"
+                        th:value="${usuario.nombre}"
+                        th:placeholder="${usuario.nombre}"
                         required
                         />
                 </div>
@@ -98,7 +101,9 @@
                         type="text"
                         id="apellidoPaterno"
                         name="apellidoPaterno"
-                        placeholder="Ketchum"
+                        th:field="*{ApellidoPaterno}"
+                        th:value="${usuario.ApellidoPaterno}"
+                        th:placeholder="${usuario.ApellidoPaterno}"
                         required
                         />
                 </div>
@@ -110,7 +115,9 @@
                         type="text"
                         id="apellidoMaterno"
                         name="apellidoMaterno"
-                        placeholder="López"
+                        th:field="*{ApellidoMaterno}"
+                        th:value="${usuario.ApellidoMaterno}"
+                        th:placeholder="${usuario.ApellidoMaterno}"
                         required
                         />
                 </div>
@@ -122,12 +129,14 @@
                         type="email"
                         id="email"
                         name="email"
-                        placeholder="entrenador@pokemon.com"
+                        th:field="*{email}"
+                        th:value="${usuario.email}"
+                        th:placeholder="${usuario.email}"
                         required
                         />
                 </div>
 
-                <!-- Password -->
+<!--                 Password 
                 <div class="form-group">
                     <label for="password">Contraseña</label>
                     <input
@@ -137,7 +146,7 @@
                         placeholder="••••••••"
                         required
                         />
-                </div>
+                </div>-->
 
               <button type="submit" class="btn-submit">Guardar</button>
             </form>
