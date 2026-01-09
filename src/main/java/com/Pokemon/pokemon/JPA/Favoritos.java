@@ -1,56 +1,55 @@
 package com.Pokemon.pokemon.JPA;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name  = "FAVORITOS")
+@Table(name = "FAVORITOS")
 public class Favoritos {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int IdFavorito;
-    
+    private Integer idFavorito;
+
     @Column(name = "idpokemon")
-    private int IdPokemon;
-    
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "idusuario", nullable = true)
-    public Usuario Usuario;
-    
-    public Favoritos(){}
-    public Favoritos(int IdFavorito, Usuario Usuario, int IdPokemon){
-        this.IdFavorito = IdFavorito;
-        this.IdPokemon = IdPokemon;
-        this.Usuario = Usuario;
+    private Integer idPokemon;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idusuario", nullable = false)
+    @JsonIgnore
+    private Usuario usuario;
+
+    public Favoritos() {}
+
+    public Favoritos(Usuario usuario, Integer idPokemon) {
+        this.usuario = usuario;
+        this.idPokemon = idPokemon;
     }
-    
-    public void setIdFavorito(int IdFavorito){
-        this.IdFavorito = IdFavorito;
+
+    // ===== Getters & Setters =====
+
+    public Integer getIdFavorito() {
+        return idFavorito;
     }
-    public int getIdFavorito(){
-        return IdFavorito;
+
+    public void setIdFavorito(Integer idFavorito) {
+        this.idFavorito = idFavorito;
     }
-    
-    public void setIdPokemon(int IdPokemon){
-        this.IdPokemon = IdPokemon;
+
+    public Integer getIdPokemon() {
+        return idPokemon;
     }
-    public int getIdPokemon(){
-        return IdPokemon;
+
+    public void setIdPokemon(Integer idPokemon) {
+        this.idPokemon = idPokemon;
     }
-    
-    public void setUsuario(Usuario Usuario){
-        this.Usuario = Usuario;
+
+    public Usuario getUsuario() {
+        return usuario;
     }
-    public Usuario getUsuario(){
-        return Usuario;
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }

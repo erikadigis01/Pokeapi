@@ -1,6 +1,6 @@
 package com.Pokemon.pokemon.Controller;
-
-
+ 
+ 
 import com.Pokemon.pokemon.JPA.Usuario;
 import com.Pokemon.pokemon.Service.JwtService;
 import com.Pokemon.pokemon.Service.UsuarioService;
@@ -12,17 +12,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+ 
 @Controller
 @RequestMapping("pokedex")
 public class PokemonController {
-    
     @Autowired 
     JwtService jwtUtil;
-    
     @Autowired
     UsuarioService usuarioService;
-    
     @GetMapping
     public String index(Model model, HttpSession session) {
         String token = (String) session.getAttribute("token");
@@ -35,21 +32,20 @@ public class PokemonController {
         }
         return "Index";
     }
-
+ 
     
     @GetMapping("detail/{email}")
     public String Form(@PathVariable("email") String email, Model model) {
-        
 //        //traer el id con el email
-//        Integer idUsuario = usuarioService.getUserIdByEmail(email);
+        Long id = usuarioService.getUserIdByEmail(email);
 //        //traer el resto del usuario
-//        Usuario usuario = usuarioService.getById(idUsuario);
+        Usuario usuario = usuarioService.getById(id);
 //        //agregarlo al modelo
-//        model.addAttribute("usuario", usuario);
+        model.addAttribute("usuario", usuario);
         model.addAttribute("email", email);
         return "Perfil";
     }
-    
-    
 
+
+ 
 }
