@@ -1007,3 +1007,24 @@ input[type="text"]:focus {
         flex-grow: 1;
     }
 }
+.breadcrumb {
+  max-width: 1300px;
+  margin: 40px auto;
+  padding: 14px;
+}
+
+.breadcrumb a {
+  color: #3B4CCA;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.breadcrumb a:hover {
+  color: #FF1744;
+}
+
+.breadcrumb span {
+  font-weight: bold;
+  color: #1f2937;
+}
