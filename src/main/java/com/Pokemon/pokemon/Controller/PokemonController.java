@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
  
 @Controller
@@ -45,6 +46,22 @@ public class PokemonController {
         model.addAttribute("email", email);
         return "Perfil";
     }
+    
+    @PostMapping("detail")
+    public String ActualizarDatos(@ModelAttribute("usuario") Usuario usuario) {
+        
+        Usuario user = usuarioService.getById(usuario.getId());
+        //sacar el roll y asignarlo
+        Roll roll = new Roll();
+        roll.setIdRoll(user.Roll.getIdRoll());
+        usuario.setRoll(roll);
+        //sacar el password y asignarlo
+        usuario.setPassword(user.getPassword());
+        //mandar al restcontroller 
+        usuarioService.update(user.getId(), usuario);
+        return "redirect:/pokedex/detail/" +  user.getEmail();
+    }
+    
 
 
  

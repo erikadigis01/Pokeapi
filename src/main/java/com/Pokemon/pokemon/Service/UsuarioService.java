@@ -29,6 +29,13 @@ public class UsuarioService implements UserDetailsService{
     public Usuario add(Usuario usuario) {
         return usuarioRepository.save(usuario);
     }
+    
+    @Transactional
+    public Usuario update(Integer id, Usuario usuarioActualizado) {
+        Usuario findUsuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        return usuarioRepository.save(usuarioActualizado);
+    }
 
     @Transactional
     public Usuario getById(Long id) {
