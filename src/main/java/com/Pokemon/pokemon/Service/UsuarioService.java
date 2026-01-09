@@ -38,12 +38,12 @@ public class UsuarioService implements UserDetailsService{
     }
 
     @Transactional
-    public Usuario getById(Integer id) {
+    public Usuario getById(Long id) {
         return usuarioRepository.findById(id).orElse(null);
     }
 
     @Transactional
-    public void delete(Integer id) {
+        public void delete(Long id) {
         usuarioRepository.deleteById(id);
     }
 
@@ -57,8 +57,8 @@ public class UsuarioService implements UserDetailsService{
         }
         
         List<GrantedAuthority> authorities = new ArrayList<>();
-        if (usuario.Roll != null) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + usuario.Roll.getNombre()));
+        if (usuario.roll != null) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + usuario.roll.getNombre()));
         }
         
         return new User(
@@ -69,7 +69,7 @@ public class UsuarioService implements UserDetailsService{
         );
     }
     
-    public Integer getUserIdByEmail(String email) {
+    public Long getUserIdByEmail(String email) {
         Usuario usuario = usuarioRepository.findByEmail(email);
         return usuario != null ? usuario.getId() : null;
     }

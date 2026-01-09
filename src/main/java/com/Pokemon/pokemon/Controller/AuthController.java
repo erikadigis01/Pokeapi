@@ -63,8 +63,8 @@ public class AuthController {
         usuario.setApellidoMaterno(apellidoMaterno);
         usuario.setEmail(email);
         usuario.setPassword(password);
-        usuario.Roll = new Roll();
-        usuario.Roll.setIdRoll(4);//por default
+        usuario.roll = new Roll();
+        usuario.roll.setIdRoll(4);//por default
         
         //mandar al restcontroller
         RestTemplate restTemplate = new RestTemplate();
@@ -120,7 +120,11 @@ public class AuthController {
             Map body = response.getBody();
             if (body != null && body.containsKey("token")) {
                 String token = (String) body.get("token"); 
+                //se manda el atributo al index
                 session.setAttribute("token", token);
+                //extraer el nombre de usuario o correo
+                String userEmail = jwtUtil.extraerUsername(token);
+                redirectAttributes.addFlashAttribute("userEmail", userEmail);
                 return "redirect:/pokedex"; 
             } else {
                 redirectAttributes.addFlashAttribute("error", "Correo o contraseña incorrectos");

@@ -52,6 +52,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
             .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
             .requestMatchers("/pokedex/**").permitAll()
             .requestMatchers("/pokemon/**").permitAll()
+            .requestMatchers("/favoritos/**").permitAll()
             .anyRequest().authenticated()
         )
         .exceptionHandling(ex -> ex

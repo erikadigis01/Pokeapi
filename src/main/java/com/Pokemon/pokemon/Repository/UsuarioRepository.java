@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
+public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
     Usuario findByEmail(String email);
     
     boolean existsByEmail(String email);
@@ -17,5 +17,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
     @Query("SELECT u FROM Usuario u WHERE u.nombre = :campo OR u.email = :campo")
     Optional<Usuario> findByIdentifier(@Param("campo") String campo);
     
-    
+    @Query("SELECT u FROM Usuario u WHERE u.id = :id")
+    Optional<Usuario> findById(@Param("id") Long id);
+     
 }
