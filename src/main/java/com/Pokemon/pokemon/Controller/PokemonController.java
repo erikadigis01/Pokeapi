@@ -1,7 +1,9 @@
 package com.Pokemon.pokemon.Controller;
 
 
+import com.Pokemon.pokemon.JPA.Usuario;
 import com.Pokemon.pokemon.Service.JwtService;
+import com.Pokemon.pokemon.Service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,9 @@ public class PokemonController {
     
     @Autowired 
     JwtService jwtUtil;
+    
+    @Autowired
+    UsuarioService usuarioService;
     
     @GetMapping
     public String index(Model model, HttpSession session) {
@@ -35,7 +40,12 @@ public class PokemonController {
     @GetMapping("detail/{email}")
     public String Form(@PathVariable("email") String email, Model model) {
         
-        
+//        //traer el id con el email
+//        Integer idUsuario = usuarioService.getUserIdByEmail(email);
+//        //traer el resto del usuario
+//        Usuario usuario = usuarioService.getById(idUsuario);
+//        //agregarlo al modelo
+//        model.addAttribute("usuario", usuario);
         model.addAttribute("email", email);
         return "Perfil";
     }
