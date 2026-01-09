@@ -63,8 +63,8 @@ public class AuthController {
         usuario.setApellidoMaterno(apellidoMaterno);
         usuario.setEmail(email);
         usuario.setPassword(password);
-        usuario.Roll = new Roll();
-        usuario.Roll.setIdRoll(4);//por default
+        usuario.roll = new Roll();
+        usuario.roll.setIdRoll(4);//por default
         
         //mandar al restcontroller
         RestTemplate restTemplate = new RestTemplate();
