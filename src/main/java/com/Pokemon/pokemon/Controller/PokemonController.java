@@ -99,11 +99,34 @@ public class PokemonController {
     }
     
     @PostMapping("detail")
-    public String ActualizarDatos(@ModelAttribute("usuario") Usuario usuario, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String ActualizarDatos(@ModelAttribute("usuario") Usuario usuario, 
+            HttpSession session, RedirectAttributes redirectAttributes,
+            Model model) {
         
         if(validarSession(session)){
         
-        
+            HttpHeaders headers = new HttpHeaders();
+            HttpEntity<Usuario> requestEntity = new HttpEntity<>(usuario, headers);
+            RestTemplate restTemplate = new RestTemplate(); 
+            
+            ResponseEntity<Result<Usuario>> responseEntityUsuario =
+               restTemplate.exchange(
+                   url + "detail",
+                   HttpMethod.POST,
+                   requestEntity,
+                   new ParameterizedTypeReference<Result<Usuario>>() {}
+               );
+            
+            Result result = responseEntityUsuario.getBody();
+            if(responseEntityUsuario.getStatusCode().value() == 201){
+
+              Result resultUsuario = responseEntityUsuario.getBody();
+              Usuario user = (Usuario) resultUsuario.object;
+              model.addAttribute("usuario", user);
+              model.addAttribute("email", user.getEmail());
+
+          }
+
         
         } else {
             
@@ -111,16 +134,6 @@ public class PokemonController {
             return "redirect:/login";
             
         }
-        
-//        Usuario user = usuarioService.getById(usuario.getId());
-//        //sacar el roll y asignarlo
-//        Roll roll = new Roll();
-//        roll.setIdRoll(user.roll.getIdRoll());
-//        usuario.setRoll(roll);
-//        //sacar el password y asignarlo
-//        usuario.setPassword(user.getPassword());
-//        //mandar al restcontroller 
-//        usuarioService.update(user.getId(), usuario);
         return "redirect:/pokedex/detail/";
     }
     
