@@ -19,6 +19,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,8 +43,8 @@ public class AuthController {
     UsuarioService usuarioService;
     
     @GetMapping
-    public String showLoginForm(Model model) {
-//        model.addAttribute("loginData", new HashMap<String, String>());
+    public String showLoginForm(Model model, @ModelAttribute("status") String status) {
+        model.addAttribute("status", status);
         return "Login";
     }
     
