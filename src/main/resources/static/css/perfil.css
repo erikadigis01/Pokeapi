@@ -311,3 +311,43 @@ body {
     cursor: pointer;
     font-size: 1.5rem;
 }
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .menu-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .menu-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .search-input {
+        max-width: none; /* ocupa todo el ancho disponible */
+        flex-grow: 1;
+    }
+}
+.breadcrumb {
+  max-width: 1300px;
+  margin: 40px auto;
+  padding: 14px;
+}
+
+.breadcrumb a {
+  color: #3B4CCA;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.breadcrumb a:hover {
+  color: #FF1744;
+}
+
+.breadcrumb span {
+  font-weight: bold;
+  color: #1f2937;
+}

@@ -23,34 +23,34 @@
         </div>
         <!--BREADCRUMBS-->
         <nav class="breadcrumb">
-            <a href="/">Inicio</a> /
-            <a href="/pokedex">Pokédex</a> /
-            <span>Perfil</span>
+          <a href="/">Inicio</a> /
+          <a href="/pokedex">Pokédex</a> /
+          <span>Perfil</span>
         </nav>
 
-
+        
         <!--PERFIL POKEMON-->
         <div class="perfil-container">
-            <!-- Datos del Maestro Pokémon -->
-            <section class="perfil-info">
-                <img src="https://static.wikia.nocookie.net/universecw/images/0/0f/Ash_Ketchum.png/revision/latest?cb=20201216120309&path-prefix=es" alt="Maestro Pokémon" class="perfil-img">
-                <div class="perfil-datos">
-                    <h2 class="perfil-nombre"><span th:text="${email}"></span></h2>
-                    <div class="badges">
-                        <span class="badge badge-region">Maestro Pokémon</span>
-                        <span class="badge badge-region">Región: Kanto</span>
-                    </div>
-                    <button class="btn-social">
-                        Editar Perfil
-                    </button>
-                </div>
-                <div class="perfil-stats">
-                    <div class="stat-item rojo">
-                        <span class="stat-label">Batallas Ganadas</span>
-                        <div class="stat-bar">
-                            <div class="fill" style="width: 80%;"></div>
-                        </div>
-                    </div>
+        <!-- Datos del Maestro Pokémon -->
+        <section class="perfil-info">
+          <img src="https://static.wikia.nocookie.net/universecw/images/0/0f/Ash_Ketchum.png/revision/latest?cb=20201216120309&path-prefix=es" alt="Maestro Pokémon" class="perfil-img">
+          <div class="perfil-datos">
+            <h2 class="perfil-nombre"><span th:text="${usuario.nombre}"></span></h2>
+            <div class="badges">
+                <span class="badge badge-region">Maestro Pokémon</span>
+                <span class="badge badge-region">Región: Kanto</span>
+              </div>
+                <button class="btn-social">
+                    Editar Perfil
+                </button>
+          </div>
+          <div class="perfil-stats">
+            <div class="stat-item rojo">
+              <span class="stat-label">Batallas Ganadas</span>
+              <div class="stat-bar">
+                <div class="fill" style="width: 80%;"></div>
+              </div>
+            </div>
 
                     <div class="stat-item amarillo">
                         <span class="stat-label">Velocidad</span>
@@ -89,68 +89,10 @@
         <script th:src="@{/js/scriptPerfil.js}"></script>
         <!-- Modal oculto -->
         <div id="modal-editar" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>Editar Perfil</h2>
-                <form>
-                    <div class="form-group">
-                        <label for="nombre">Nombre</label>
-                        <input
-                            type="text"
-                            id="nombre"
-                            name="nombre"
-                            placeholder="Ash"
-                            required
-                            />
-                    </div>
 
-                    <!-- Apellido Paterno -->
-                    <div class="form-group">
-                        <label for="apellidoPaterno">Apellido Paterno</label>
-                        <input
-                            type="text"
-                            id="apellidoPaterno"
-                            name="apellidoPaterno"
-                            placeholder="Ketchum"
-                            required
-                            />
-                    </div>
 
-                    <!-- Apellido Materno -->
-                    <div class="form-group">
-                        <label for="apellidoMaterno">Apellido Materno</label>
-                        <input
-                            type="text"
-                            id="apellidoMaterno"
-                            name="apellidoMaterno"
-                            placeholder="López"
-                            required
-                            />
-                    </div>
 
-                    <!-- Email -->
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            placeholder="entrenador@pokemon.com"
-                            required
-                            />
-                    </div>
 
-                    <!-- Password -->
-                    <div class="form-group">
-                        <label for="password">Contraseña</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="••••••••"
-                            required
-                            />
-                    </div>
 
                     <button type="submit" class="btn-submit">Guardar</button>
                 </form>
