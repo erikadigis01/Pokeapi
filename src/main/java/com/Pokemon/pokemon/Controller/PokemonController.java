@@ -4,6 +4,7 @@ package com.Pokemon.pokemon.Controller;
 import com.Pokemon.pokemon.JPA.Result;
 import com.Pokemon.pokemon.JPA.Roll;
 import com.Pokemon.pokemon.JPA.Usuario;
+import com.Pokemon.pokemon.JPA.Roll;
 import com.Pokemon.pokemon.Service.JwtService;
 import com.Pokemon.pokemon.Service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
