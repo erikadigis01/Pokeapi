@@ -35,7 +35,7 @@ const noResults = document.getElementById('noResults');
 
 // Modal editar perfil
 const modalEditar = document.getElementById("modal-editar");
-const btnEditar = document.querySelector(".btn-social");
+const btnEditar = document.getElementById("btnEditarPerfil");
 const btnCerrar = document.querySelector(".close");
 
 
