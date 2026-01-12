@@ -61,14 +61,20 @@ const userName = document.getElementById('userName');
 
 async function initApp() {
     try {
-        initializeTypeFilters();
         loadUserName();
 
-        // ⏳ esperamos favoritos
-        favoritosIds = await cargarFavoritos();
+        // Si estamos en pokedex
+        if (typeFiltersContainer) {
+            initializeTypeFilters();
+            favoritosIds = await cargarFavoritos();
+            await fetchPokemons(currentPage);
+        }
 
-        // 🎮 cargamos pokemons ya con favoritos
-        await fetchPokemons(currentPage);
+        // Si estamos en perfil
+        if (pokemonGrid && !typeFiltersContainer) {
+            favoritosIds = await cargarFavoritos();
+            await cargarPokemonsFavoritos();
+        }
 
     } catch (err) {
         console.error('Error inicializando app', err);
@@ -82,25 +88,42 @@ document.addEventListener('DOMContentLoaded', initApp);
 // ======================
 // Events
 // ======================
-navSearchInput.addEventListener('input', handleSearch);
-navClearSearchBtn.addEventListener('click', clearSearch);
-prevBtn.addEventListener('click', () => changePage(currentPage - 1));
-nextBtn.addEventListener('click', () => changePage(currentPage + 1));
+if (navSearchInput) {
+    navSearchInput.addEventListener('input', handleSearch);
+}
 
-modal.addEventListener('click', e => {
-    if (
-            e.target === modal ||
-            e.target.classList.contains('modal-overlay') ||
-            e.target.classList.contains('modal-close')
-            ) {
-        closeModal();
-    }
-});
+if (navClearSearchBtn) {
+    navClearSearchBtn.addEventListener('click', clearSearch);
+}
+
+if (prevBtn) {
+    prevBtn.addEventListener('click', () => changePage(currentPage - 1));
+}
+
+if (nextBtn) {
+    nextBtn.addEventListener('click', () => changePage(currentPage + 1));
+}
+
+if (modal) {
+    modal.addEventListener('click', e => {
+        if (
+                e.target === modal ||
+                e.target.classList.contains('modal-overlay') ||
+                e.target.classList.contains('modal-close')
+                ) {
+            closeModal();
+        }
+    });
+}
+
 
 // ======================
 // Type filters
 // ======================
 function initializeTypeFilters() {
+    if (!typeFiltersContainer)
+        return;   // 👈 evita que explote en Perfil
+
     pokemonTypes.forEach(type => {
         const btn = document.createElement('button');
         btn.className = `type-filter-btn type-${type}`;
@@ -110,6 +133,7 @@ function initializeTypeFilters() {
         typeFiltersContainer.appendChild(btn);
     });
 }
+
 
 // ======================
 // Fetch
@@ -530,11 +554,10 @@ async function loadUserName() {
 // ======================
 
 async function toggleFavorito(pokemonId) {
-    const idUsuario = 1;
 
     const res = await fetch(
-        `/favoritos/toggle?idUsuario=${idUsuario}&idPokemon=${pokemonId}`,
-        { method: 'POST' }
+            `/favoritos/toggle?idPokemon=${pokemonId}`,
+            {method: 'POST'}
     );
 
     const data = await res.json();
@@ -543,25 +566,31 @@ async function toggleFavorito(pokemonId) {
 
 
 async function cargarFavoritos() {
-    const usuarioId = 1;
-
-    const res = await fetch(`/favoritos/${usuarioId}`);
+    const res = await fetch(`/favoritos`);
 
     const text = await res.text();
     console.log("Respuesta favoritos:", text);
 
     if (!res.ok) {
-        throw new Error("Error backend favoritos");
+        throw new Error("No autorizado");
     }
 
     const favoritos = JSON.parse(text);
     return favoritos.map(f => f.idPokemon);
 }
 
+async function cargarPokemonsFavoritos() {
+    pokemonGrid.innerHTML = '';
 
+    for (const id of favoritosIds) {
+        const res = await fetch(`/pokemon/${id}`);
+        const pokemon = await res.json();
 
-
-
-
-
-
+        renderPokemons([{
+                id: pokemon.id,
+                name: pokemon.name,
+                image: pokemon.sprites.front_default,
+                types: pokemon.types.map(t => t.type.name)
+            }], favoritosIds);
+    }
+}

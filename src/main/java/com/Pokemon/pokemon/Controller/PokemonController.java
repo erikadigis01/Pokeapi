@@ -2,6 +2,7 @@ package com.Pokemon.pokemon.Controller;
  
  
 import com.Pokemon.pokemon.JPA.Usuario;
+import com.Pokemon.pokemon.JPA.Roll;
 import com.Pokemon.pokemon.Service.JwtService;
 import com.Pokemon.pokemon.Service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
@@ -53,7 +54,7 @@ public class PokemonController {
         Usuario user = usuarioService.getById(usuario.getId());
         //sacar el roll y asignarlo
         Roll roll = new Roll();
-        roll.setIdRoll(user.Roll.getIdRoll());
+        roll.setIdRoll(user.roll.getIdRoll());
         usuario.setRoll(roll);
         //sacar el password y asignarlo
         usuario.setPassword(user.getPassword());

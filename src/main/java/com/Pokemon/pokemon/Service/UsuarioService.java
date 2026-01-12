@@ -31,7 +31,7 @@ public class UsuarioService implements UserDetailsService{
     }
     
     @Transactional
-    public Usuario update(Integer id, Usuario usuarioActualizado) {
+    public Usuario update(Long id, Usuario usuarioActualizado) {
         Usuario findUsuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         return usuarioRepository.save(usuarioActualizado);
