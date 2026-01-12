@@ -60,7 +60,7 @@ body {
 .perfil-container {
     max-width: 1300px;
     margin: 40px auto;
-    background: white;
+    background: #dc2626;
     border-radius: 16px;
     padding: 24px;
     box-shadow: 0 8px 20px rgba(0,0,0,.2);
@@ -75,9 +75,16 @@ body {
 
 .perfil-img {
     width: 160px;
+    aspect-ratio: 1;
     border-radius: 50%;
     border: 4px solid #3B4CCA;
+    background: white;
+    padding: 4px;
+    box-shadow:
+        0 0 0 4px #FFCB05,   /* aro amarillo Pokémon */
+        0 8px 16px rgba(0,0,0,0.25);
 }
+
 
 .perfil-datos h2 {
     font-family: 'Press Start 2P', cursive;
@@ -149,9 +156,15 @@ body {
     border-radius: 8px;
 }
 
-.rojo .fill { background: linear-gradient(#ff1744,#c41c00); }
-.amarillo .fill { background: linear-gradient(#ffd600,#ffab00); }
-.azul .fill { background: linear-gradient(#2196F3,#1565C0); }
+.rojo .fill {
+    background: linear-gradient(#ff1744,#c41c00);
+}
+.amarillo .fill {
+    background: linear-gradient(#ffd600,#ffab00);
+}
+.azul .fill {
+    background: linear-gradient(#2196F3,#1565C0);
+}
 
 /* =========================
    FAVORITOS
@@ -165,9 +178,16 @@ body {
 
 .favoritos h3 {
     font-family: 'Press Start 2P', cursive;
-    margin-bottom: 1.5rem;
-    color: #3B4CCA;
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #FFCB05; /* amarillo Pokémon */
+    text-shadow:
+        2px 2px 0 #3B4CCA,
+        4px 4px 0 #000;
+    letter-spacing: 1px;
 }
+
 
 /* =========================
    GRID DE POKEMON
@@ -237,23 +257,57 @@ body {
     color: white;
 }
 
-.type-fire{background:#F08030;}
-.type-water{background:#6890F0;}
-.type-grass{background:#78C850;}
-.type-electric{background:#F8D030;}
-.type-ice{background:#98D8D8;}
-.type-fighting{background:#C03028;}
-.type-poison{background:#A040A0;}
-.type-ground{background:#E0C068;}
-.type-flying{background:#A890F0;}
-.type-psychic{background:#F85888;}
-.type-bug{background:#A8B820;}
-.type-rock{background:#B8A038;}
-.type-ghost{background:#705898;}
-.type-dragon{background:#7038F8;}
-.type-dark{background:#705848;}
-.type-steel{background:#B8B8D0;}
-.type-fairy{background:#EE99AC;}
+.type-fire{
+    background:#F08030;
+}
+.type-water{
+    background:#6890F0;
+}
+.type-grass{
+    background:#78C850;
+}
+.type-electric{
+    background:#F8D030;
+}
+.type-ice{
+    background:#98D8D8;
+}
+.type-fighting{
+    background:#C03028;
+}
+.type-poison{
+    background:#A040A0;
+}
+.type-ground{
+    background:#E0C068;
+}
+.type-flying{
+    background:#A890F0;
+}
+.type-psychic{
+    background:#F85888;
+}
+.type-bug{
+    background:#A8B820;
+}
+.type-rock{
+    background:#B8A038;
+}
+.type-ghost{
+    background:#705898;
+}
+.type-dragon{
+    background:#7038F8;
+}
+.type-dark{
+    background:#705848;
+}
+.type-steel{
+    background:#B8B8D0;
+}
+.type-fairy{
+    background:#EE99AC;
+}
 
 /* =========================
    FAVORITO
@@ -287,30 +341,160 @@ body {
     transform: scale(1.1);
 }
 
+
+
+
+/* =========================
+   Cerrar Sesion
+========================= */
+.menu-right {
+    margin-right: 20px;
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: white;
+    color: #dc2626;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    transition: 0.2s ease;
+}
+
+.logout-btn i {
+    font-size: 1.1rem;
+}
+
+.logout-btn {
+    border-radius: 999px;
+}
+
+.logout-btn:hover {
+    background: #fee2e2;
+    transform: translateY(-2px);
+}
+
+
+
 /* =========================
    MODAL
 ========================= */
 
 .modal {
-    display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.7);
+    background: rgba(15, 23, 42, .75);
+    backdrop-filter: blur(4px);
+    display: none;
+    z-index: 1000;
 }
 
+/* Contenedor */
 .modal-content {
-    background: white;
-    width: 400px;
-    margin: 10% auto;
-    padding: 2rem;
-    border-radius: 12px;
+    width: 420px;
+    max-width: 90%;
+    background: #fefefe;
+    margin: 8% auto;
+    padding: 2.2rem;
+    border-radius: 14px;
+    border: 3px solid #1f2937;
+    box-shadow:
+        0 10px 40px rgba(0,0,0,.5),
+        0 0 0 4px #ef4444;
+    animation: modalPop .35s ease;
+    position: relative;
+    font-family: "Poppins", sans-serif;
 }
 
-.close {
-    float: right;
-    cursor: pointer;
-    font-size: 1.5rem;
+/* Animación */
+@keyframes modalPop {
+    from {
+        transform: scale(.8) translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
 }
+
+/* Botón cerrar estilo Pokédex */
+.close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    font-size: 1.6rem;
+    cursor: pointer;
+    color: #1f2937;
+    width: 36px;
+    height: 36px;
+    border: 2px solid #1f2937;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    box-shadow: 3px 3px 0 #1f2937;
+    transition: all .15s ease;
+}
+
+.close:hover {
+    background: #ef4444;
+    color: white;
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 #1f2937;
+}
+
+/* Título */
+.modal-content h2 {
+    font-family: "Press Start 2P", monospace;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    color: #1f2937;
+    border-bottom: 3px solid #ef4444;
+    padding-bottom: .8rem;
+}
+
+/* Inputs */
+.modal-content input {
+    width: 100%;
+    padding: .7rem .9rem;
+    border: 2px solid #1f2937;
+    border-radius: 8px;
+    font-size: .9rem;
+    outline: none;
+    transition: all .2s ease;
+}
+
+.modal-content input:focus {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239,68,68,.3);
+}
+
+/* Botón guardar */
+.btn-submit {
+    margin-top: 1.5rem;
+    width: 100%;
+    padding: .8rem;
+    background: linear-gradient(90deg, #ef4444, #facc15);
+    border: 2px solid #1f2937;
+    border-radius: 10px;
+    font-weight: 700;
+    color: #1f2937;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 #1f2937;
+    transition: all .15s ease;
+}
+
+.btn-submit:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 #1f2937;
+}
+
 
 /* Responsivo */
 @media (max-width: 768px) {
@@ -331,23 +515,23 @@ body {
     }
 }
 .breadcrumb {
-  max-width: 1300px;
-  margin: 40px auto;
-  padding: 14px;
+    max-width: 1300px;
+    margin: 40px auto;
+    padding: 14px;
 }
 
 .breadcrumb a {
-  color: #3B4CCA;
-  text-decoration: none;
-  font-weight: 600;
-  transition: color 0.3s;
+    color: #3B4CCA;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
 }
 
 .breadcrumb a:hover {
-  color: #FF1744;
+    color: #FF1744;
 }
 
 .breadcrumb span {
-  font-weight: bold;
-  color: #1f2937;
+    font-weight: bold;
+    color: #1f2937;
 }

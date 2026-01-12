@@ -135,7 +135,7 @@ public class PokemonController {
             return "redirect:/login";
             
         }
-        return "redirect:/pokedex/detail/";
+        return "redirect:/pokedex/detail/" + usuario.getEmail();
     }
     
 
