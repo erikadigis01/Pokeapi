@@ -27,7 +27,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/login")
 public class AuthController {
     
     public String url = "http://localhost:8080/auth";
@@ -42,17 +41,17 @@ public class AuthController {
     @Autowired
     UsuarioService usuarioService;
     
-    @GetMapping
+    @GetMapping("login")
     public String showLoginForm(Model model, @ModelAttribute("status") String status) {
         model.addAttribute("status", status);
         return "Login";
     }
     
-    @GetMapping("/registro")
+    @GetMapping("/login/registro")
     public String createAccount(Model model) {
         return "Registro";
     }
-    @PostMapping("/registrar")
+    @PostMapping("/login/registrar")
     public String RegistrarCuenta(@RequestParam String nombre, @RequestParam String apellidoPaterno,
             @RequestParam String apellidoMaterno,@RequestParam String email,
             @RequestParam String password, Model model, RedirectAttributes redirectAttributes ){
@@ -99,7 +98,7 @@ public class AuthController {
         }
     }
     
-    @PostMapping
+    @PostMapping("login")
     public String iniciarSesion(@RequestParam String email, @RequestParam String password, 
             Model model, HttpSession session, RedirectAttributes redirectAttributes) {
 
@@ -137,7 +136,7 @@ public class AuthController {
            return "redirect:/login"; 
         }
     }
-
-
+    
+    
 
 }
