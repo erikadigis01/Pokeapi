@@ -1,27 +1,32 @@
 package com.Pokemon.pokemon.Service;
 
 import com.Pokemon.pokemon.DTO.PageResponse;
+import com.Pokemon.pokemon.DTO.PokemonAdminCardDTO;
 import com.Pokemon.pokemon.DTO.PokemonCardDTO;
 import com.Pokemon.pokemon.DTO.PokemonDTO;
 import com.Pokemon.pokemon.DTO.PokemonListResponse;
+import com.Pokemon.pokemon.Repository.FavoritosRepository;
 import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
 public class PokemonService {
+    
+    @Autowired
+    FavoritosRepository favoritosRepository;
 
     private final RestTemplate restTemplate = new RestTemplate();
     private static final String BASE_URL = "https://pokeapi.co/api/v2/pokemon";
 
-    // 🔹 Lista completa en memoria (ligera)
     private final List<PokemonCardDTO> allPokemons = new ArrayList<>();
 
-    // 🔹 Se ejecuta UNA SOLA VEZ al arrancar la app
+    
     @PostConstruct
     public void loadAllPokemons() {
 
@@ -39,7 +44,7 @@ public class PokemonService {
         System.out.println("Pokémon cargados: " + allPokemons.size());
     }
 
-    // 🔹 Mapper: DTO pesado → DTO ligero (cartas)
+    
     private PokemonCardDTO mapToCard(PokemonDTO dto) {
         PokemonCardDTO card = new PokemonCardDTO();
         card.setId(dto.getId());
@@ -53,7 +58,7 @@ public class PokemonService {
         return card;
     }
 
-    // 🔹 FILTRO GLOBAL (ANTES de paginar)
+    
     private List<PokemonCardDTO> filterPokemons(
             String name,
             String type,
@@ -69,7 +74,7 @@ public class PokemonService {
                 .toList();
     }
 
-    // 🔹 PAGINACIÓN CORRECTA
+   
     private PageResponse<PokemonCardDTO> paginate(
             List<PokemonCardDTO> list,
             int page,
@@ -90,7 +95,6 @@ public class PokemonService {
         );
     }
 
-    // 🔹 MÉTODO PRINCIPAL PARA LA LISTA (cartas)
     public PageResponse<PokemonCardDTO> getPokemons(
             int page,
             int size,
@@ -104,16 +108,27 @@ public class PokemonService {
         return paginate(filtered, page, size);
     }
 
-    // 🔹 Para el MODAL (detalle)
     public PokemonDTO getPokemonByName(String name) {
         String url = BASE_URL + "/" + name;
         return restTemplate.getForObject(url, PokemonDTO.class);
     }
 
-    // 🔹 Tipos disponibles (para filtros)
     public Set<String> getAllTypes() {
         return allPokemons.stream()
                 .flatMap(p -> p.getTypes().stream())
                 .collect(Collectors.toSet());
+    }
+    
+    public List<PokemonAdminCardDTO> getPokemonsConFavoritos() {
+        return allPokemons.stream().map(p -> {
+            PokemonAdminCardDTO adminCard = new PokemonAdminCardDTO();
+            adminCard.setId(p.getId());
+            adminCard.setName(p.getName());
+            adminCard.setImage(p.getImage());
+            adminCard.setTypes(p.getTypes());
+            long count = favoritosRepository.countByIdPokemon(p.getId()); 
+            adminCard.setFavoritosCount(count); 
+            return adminCard; 
+        }).toList(); 
     }
 }

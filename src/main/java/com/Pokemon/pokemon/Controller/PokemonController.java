@@ -2,18 +2,19 @@ package com.Pokemon.pokemon.Controller;
  
  
 import com.Pokemon.pokemon.JPA.Result;
-import com.Pokemon.pokemon.JPA.Roll;
 import com.Pokemon.pokemon.JPA.Usuario;
-import com.Pokemon.pokemon.JPA.Roll;
 import com.Pokemon.pokemon.Service.JwtService;
 import com.Pokemon.pokemon.Service.UsuarioService;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,118 +28,109 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("pokedex")
 public class PokemonController {
-    
-    public String url = "http://localhost:8080/pokemon/";
-    
-    @Autowired 
-    JwtService jwtUtil;
-    
+
+    private final String url = "http://localhost:8080/pokemon/";
+
     @Autowired
-    UsuarioService usuarioService;
+    private JwtService jwtUtil;
+
+    @Autowired
+    private UsuarioService usuarioService;
     
-//    VALIDAR SESSION PARA SEPARAR LOGICA
-    public boolean validarSession(HttpSession session){
-        String token = (String) session.getAttribute("token");
-        boolean val = jwtUtil.isTokenExpiration(token);
-        //se puede seapara aun mas 
-        if(token != null && !jwtUtil.isTokenExpiration(token)) {
-            return true;
-        }else {
-            return false;
+    private String getTokenFromCookie(HttpServletRequest request) {
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("JWT_TOKEN".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
         }
+        return null;
     }
-    
+
+
     @GetMapping
-    public String index(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
-        
-        if (validarSession(session)) {
-            String userEmail = jwtUtil.extraerUsername((String) session.getAttribute("token"));
-            model.addAttribute("session", session);
-            model.addAttribute("userEmail", userEmail);
-        } else {
-            // Si no hay token, redirige al login
-            redirectAttributes.addAttribute("status", "Su sessión ha caducado");
+    public String index(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
             return "redirect:/login";
         }
+        model.addAttribute("userEmail", userDetails.getUsername());
         return "Index";
     }
- 
-    
+
     @GetMapping("detail/{email}")
-    public String Form(@PathVariable("email") String email, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String detalleUsuario(@PathVariable("email") String email,
+                             HttpServletRequest request,
+                             Model model,
+                             RedirectAttributes redirectAttributes) {
 
-        if(validarSession(session)){
+    String token = getTokenFromCookie(request);
+    if (token == null) {
+        redirectAttributes.addAttribute("status", "Su sesión ha caducado");
+        return "redirect:/login";
+    }
 
-            HttpHeaders headers = new HttpHeaders();
-            HttpEntity<?> requestEntity = new HttpEntity<>(headers);
-            RestTemplate restTemplate = new RestTemplate(); 
-            
-            ResponseEntity<Result<Usuario>> responseEntityUsuario =
-              restTemplate.exchange(
-                  url  + "detail/" + email,
-                  HttpMethod.GET,
-                  requestEntity,
-                  new ParameterizedTypeReference<Result<Usuario>>() {}
-              );
-          if(responseEntityUsuario.getStatusCode().value() == 200){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        HttpEntity<?> entity = new HttpEntity<>(headers);
 
-              Result resultUsuario = responseEntityUsuario.getBody();
-              Usuario user = (Usuario) resultUsuario.object;
-              model.addAttribute("usuario", user);
-              model.addAttribute("email", email);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Result<Usuario>> response =
+            restTemplate.exchange(url + "detail/" + email,
+                                  HttpMethod.GET,
+                                  entity,
+                                  new ParameterizedTypeReference<Result<Usuario>>() {});
 
-          }
+        if (response.getStatusCode().is2xxSuccessful()) {
+            Usuario usuario = (Usuario) response.getBody().object;
+            model.addAttribute("usuario", usuario);
+        }
 
-        }  else {
-              redirectAttributes.addAttribute("status", "Su sessión ha caducado");
-              return "redirect:/login";
-          }
-
-
-      return "Perfil";
-      
+        return "Perfil";
     }
     
     @PostMapping("detail")
-    public String ActualizarDatos(@ModelAttribute("usuario") Usuario usuario, 
-            HttpSession session, RedirectAttributes redirectAttributes,
-            Model model) {
-        
-        if(validarSession(session)){
-        
-            HttpHeaders headers = new HttpHeaders();
-            HttpEntity<Usuario> requestEntity = new HttpEntity<>(usuario, headers);
-            RestTemplate restTemplate = new RestTemplate(); 
-            
-            ResponseEntity<Result<Usuario>> responseEntityUsuario =
-               restTemplate.exchange(
-                   url + "detail",
-                   HttpMethod.POST,
-                   requestEntity,
-                   new ParameterizedTypeReference<Result<Usuario>>() {}
-               );
-            
-            Result result = responseEntityUsuario.getBody();
-            if(responseEntityUsuario.getStatusCode().value() == 201){
+    public String actualizarDatos(@ModelAttribute("usuario") Usuario usuario,
+                                  HttpServletRequest request,
+                                  RedirectAttributes redirectAttributes,
+                                  Model model) {
 
-              Result resultUsuario = responseEntityUsuario.getBody();
-              Usuario user = (Usuario) resultUsuario.object;
-              model.addAttribute("usuario", user);
-              model.addAttribute("email", user.getEmail());
-
-          }
-
-        
-        } else {
-            
-            redirectAttributes.addAttribute("status", "Su sessión ha caducado");
-            return "redirect:/login";
-            
+        String token = null;
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("JWT_TOKEN".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                }
+            }
         }
+
+        if (token == null) {
+            redirectAttributes.addAttribute("status", "Su sesión ha caducado");
+            return "redirect:/login";
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        HttpEntity<Usuario> requestEntity = new HttpEntity<>(usuario, headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        ResponseEntity<Result<Usuario>> responseEntityUsuario =
+            restTemplate.exchange(
+                url + "detail",
+                HttpMethod.POST,
+                requestEntity,
+                new ParameterizedTypeReference<Result<Usuario>>() {}
+            );
+
+        if (responseEntityUsuario.getStatusCode().value() == 201) {
+            Result resultUsuario = responseEntityUsuario.getBody();
+            Usuario user = (Usuario) resultUsuario.object;
+            model.addAttribute("usuario", user);
+            model.addAttribute("email", user.getEmail());
+        }
+
         return "redirect:/pokedex/detail/" + usuario.getEmail();
     }
-    
 
-
- 
 }

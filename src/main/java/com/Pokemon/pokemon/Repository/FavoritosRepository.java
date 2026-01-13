@@ -14,4 +14,6 @@ public interface FavoritosRepository extends JpaRepository<Favoritos, Integer> {
     );
 
     List<Favoritos> findByUsuarioId(Long id);
+    
+    long countByIdPokemon(Integer idPokemon);
 }

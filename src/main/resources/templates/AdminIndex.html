@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Pokédex</title>
+        <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/css/styles.css">   
+    </head>
+    <body>
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <div class="navbar-brand">
+                    <h1 class="titulo-pokemon">POKÉDEX</h1>
+                </div>
+
+                <div class="navbar-search">
+                    <input 
+                        type="text" 
+                        id="navSearchInput" 
+                        placeholder="Buscar por nombre o número..."
+                        class="navbar-search-input"
+                        >
+                    <button id="navClearSearch" class="nav-clear-btn" style="display: none;">×</button>
+                </div>
+                <a type="button" class="text-decoration-none" th:href="@{/pokedex/detail/{email}(email=${userEmail})}">
+                    <div class="navbar-user">
+                        <div class="user-avatar">
+                            <span>👤</span>
+                        </div>
+                        <span class="user-name" id="userName"><span th:text="${userEmail}"></span></span>
+                    </div>
+                </a>
+
+            </div>
+        </nav>
+
+        <div class="container">
+            <!-- Type Filter Section -->
+            <div class="filter-section">
+                <div class="filter-content">
+                    <h2 class="filter-title">Filtrar por tipo</h2>
+                    <div class="type-filters" id="typeFilters">
+                        <button class="type-filter-btn active" data-type="all" onclick="filterByType('all')">
+                            Todos
+                        </button>
+
+                    </div>
+                    <div id="filterResults" class="filter-results"></div>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Cargando Pokémon...</p>
+            </div>
+
+            <!-- No Results -->
+            <div id="noResults" class="no-results" style="display: none;">
+                <p class="no-results-title">No se encontraron Pokémon</p>
+                <p class="no-results-text">Intenta con otro término de búsqueda o filtro</p>
+            </div>
+
+            <!-- Pokemon Grid -->
+            <div id="adminPokemonGrid" class="pokemon-grid"></div>
+
+            <!-- Pagination -->
+            <div id="pagination" class="pagination">
+                <button id="prevBtn" class="btn-pagination">← Anterior</button>
+                <span id="pageInfo" class="page-info">Página 1 de 1</span>
+                <button id="nextBtn" class="btn-pagination">Siguiente →</button>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div id="modal" class="modal" style="display: none;">
+            <div class="modal-overlay"></div>
+            <div class="modal-content">
+                <button class="modal-close">×</button>
+                <div id="modalBody"></div>
+            </div>
+        </div>
+
+        <script src="/js/script.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    </body>
+</html>

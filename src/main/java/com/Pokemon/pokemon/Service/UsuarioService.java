@@ -57,9 +57,10 @@ public class UsuarioService implements UserDetailsService{
         }
         
         List<GrantedAuthority> authorities = new ArrayList<>();
-        if (usuario.roll != null) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + usuario.roll.getNombre()));
+        if (usuario.getRoll() != null) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + usuario.getRoll().getNombre()));
         }
+
         
         return new User(
             usuario.getEmail(),
