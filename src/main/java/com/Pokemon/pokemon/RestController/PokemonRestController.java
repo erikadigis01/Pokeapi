@@ -3,11 +3,13 @@ package com.Pokemon.pokemon.RestController;
 import com.Pokemon.pokemon.DTO.PageResponse;
 import com.Pokemon.pokemon.DTO.PokemonCardDTO;
 import com.Pokemon.pokemon.DTO.PokemonDTO;
+import com.Pokemon.pokemon.JPA.Favoritos;
 import com.Pokemon.pokemon.JPA.Result;
 import com.Pokemon.pokemon.JPA.Roll;
 import com.Pokemon.pokemon.JPA.Usuario;
 import com.Pokemon.pokemon.Service.PokemonService;
 import com.Pokemon.pokemon.Service.UsuarioService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -82,6 +84,9 @@ public class PokemonRestController {
             usuario.setRoll(roll);
             //sacar el password y asignarlo
             usuario.setPassword(user.getPassword());
+            //actualizar la lista de pokemones
+            List<Favoritos> favoritos = user.getFavoritos();
+            usuario.setFavoritos(favoritos);
             //mandar al restcontroller 
             usuarioService.update(user.getId(), usuario);
             Usuario userFind = usuarioService.getById(usuario.getId());
