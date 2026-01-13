@@ -12,6 +12,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminRestController {
 
     private final PokemonService pokemonService;
+    
     @Autowired
     UsuarioService usuarioService;
 
@@ -103,5 +105,73 @@ public class AdminRestController {
          return ResponseEntity.status(result.status).body(result);
       
     }
-
+    @GetMapping("/users")
+     public ResponseEntity GetAllUsers() {
+         Result result =  new Result();
+         try {
+             
+            List<Usuario> users = usuarioService.getAll();
+            result.objects = users;
+            result.correct = true;
+            result.errorMessage = "Se encontraron usuarios";
+            result.status = 200;
+         
+         } catch(Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+            result.status = 400;
+         
+         }
+         return ResponseEntity.status(result.status).body(result);
+     }
+     
+     @GetMapping("/users/{idUser}")
+     public ResponseEntity GetByIdUser(@PathVariable("idUser") int idUser){
+     
+        Result result =  new Result();
+         try {
+             
+            long id = idUser;
+            Usuario user = usuarioService.getById(id);
+            
+            result.object = user;
+            result.correct = true;
+            result.errorMessage = "Se encontro el usuario";
+            result.status = 200;
+         
+         } catch(Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+            result.status = 400;
+         
+         }
+         return ResponseEntity.status(result.status).body(result);
+    
+     }
+     
+     @DeleteMapping("/users/{idUser}")
+     public ResponseEntity DeleteUser(@PathVariable("idUser") int idUser){
+         Result result = new Result();
+         
+         try {
+             
+             long id = idUser;
+             usuarioService.delete(id);
+             result.correct = true;
+             result.errorMessage = "Se elimino el mensaje";
+             result.status = 200;
+         
+         } catch (Exception ex) {
+         
+             result.correct = false;
+             result.errorMessage = ex.getLocalizedMessage();
+             result.ex = ex;
+             result.status = 400;
+         }
+         
+         return ResponseEntity.status(result.status).body(result);
+     
+     }
 }
