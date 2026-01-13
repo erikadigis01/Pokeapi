@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class PokemonService {
-    
+
     @Autowired
     FavoritosRepository favoritosRepository;
 
@@ -26,17 +26,16 @@ public class PokemonService {
 
     private final List<PokemonCardDTO> allPokemons = new ArrayList<>();
 
-    
     @PostConstruct
     public void loadAllPokemons() {
 
         String url = BASE_URL + "?limit=20&offset=0";
-        PokemonListResponse response =
-                restTemplate.getForObject(url, PokemonListResponse.class);
+        PokemonListResponse response
+                = restTemplate.getForObject(url, PokemonListResponse.class);
 
         for (var result : response.getResults()) {
-            PokemonDTO dto =
-                    restTemplate.getForObject(result.getUrl(), PokemonDTO.class);
+            PokemonDTO dto
+                    = restTemplate.getForObject(result.getUrl(), PokemonDTO.class);
 
             allPokemons.add(mapToCard(dto));
         }
@@ -44,7 +43,6 @@ public class PokemonService {
         System.out.println("Pokémon cargados: " + allPokemons.size());
     }
 
-    
     private PokemonCardDTO mapToCard(PokemonDTO dto) {
         PokemonCardDTO card = new PokemonCardDTO();
         card.setId(dto.getId());
@@ -58,23 +56,21 @@ public class PokemonService {
         return card;
     }
 
-    
     private List<PokemonCardDTO> filterPokemons(
             String name,
             String type,
             Integer number
     ) {
         return allPokemons.stream()
-                .filter(p -> name == null ||
-                        p.getName().toLowerCase().contains(name.toLowerCase()))
-                .filter(p -> type == null ||
-                        p.getTypes().contains(type.toLowerCase()))
-                .filter(p -> number == null ||
-                        p.getId() == number)
+                .filter(p -> name == null
+                || p.getName().toLowerCase().contains(name.toLowerCase()))
+                .filter(p -> type == null
+                || p.getTypes().contains(type.toLowerCase()))
+                .filter(p -> number == null
+                || p.getId() == number)
                 .toList();
     }
 
-   
     private PageResponse<PokemonCardDTO> paginate(
             List<PokemonCardDTO> list,
             int page,
@@ -83,8 +79,8 @@ public class PokemonService {
         int start = page * size;
         int end = Math.min(start + size, list.size());
 
-        List<PokemonCardDTO> content =
-                start > list.size() ? List.of() : list.subList(start, end);
+        List<PokemonCardDTO> content
+                = start > list.size() ? List.of() : list.subList(start, end);
 
         return new PageResponse<>(
                 content,
@@ -102,8 +98,8 @@ public class PokemonService {
             String type,
             Integer number
     ) {
-        List<PokemonCardDTO> filtered =
-                filterPokemons(name, type, number);
+        List<PokemonCardDTO> filtered
+                = filterPokemons(name, type, number);
 
         return paginate(filtered, page, size);
     }
@@ -118,7 +114,7 @@ public class PokemonService {
                 .flatMap(p -> p.getTypes().stream())
                 .collect(Collectors.toSet());
     }
-    
+
     public List<PokemonAdminCardDTO> getPokemonsConFavoritos() {
         return allPokemons.stream().map(p -> {
             PokemonAdminCardDTO adminCard = new PokemonAdminCardDTO();
@@ -126,9 +122,54 @@ public class PokemonService {
             adminCard.setName(p.getName());
             adminCard.setImage(p.getImage());
             adminCard.setTypes(p.getTypes());
-            long count = favoritosRepository.countByIdPokemon(p.getId()); 
-            adminCard.setFavoritosCount(count); 
-            return adminCard; 
-        }).toList(); 
+            long count = favoritosRepository.countByIdPokemon(p.getId());
+            adminCard.setFavoritosCount(count);
+            return adminCard;
+        }).toList();
     }
+
+    public PageResponse<PokemonAdminCardDTO> getAdminPokemons(
+            int page,
+            int size,
+            String name,
+            String type,
+            Integer number
+    ) {
+        // 1. Usamos el mismo filtro que usa el usuario
+        List<PokemonCardDTO> filtered = filterPokemons(name, type, number);
+
+        // 2. Convertimos a AdminDTO (con favoritos)
+        List<PokemonAdminCardDTO> adminList = filtered.stream().map(p -> {
+            PokemonAdminCardDTO admin = new PokemonAdminCardDTO();
+            admin.setId(p.getId());
+            admin.setName(p.getName());
+            admin.setImage(p.getImage());
+            admin.setTypes(p.getTypes());
+
+            long count = favoritosRepository.countByIdPokemon(p.getId());
+            admin.setFavoritosCount(count);
+
+            return admin;
+        }).toList();
+
+        // 3. Paginamos usando tu mismo método
+        return paginateAdmin(adminList, page, size);
+    }
+
+    private <T> PageResponse<T> paginateAdmin(List<T> list, int page, int size) {
+        int start = page * size;
+        int end = Math.min(start + size, list.size());
+
+        List<T> content
+                = start > list.size() ? List.of() : list.subList(start, end);
+
+        return new PageResponse<>(
+                content,
+                page,
+                size,
+                list.size(),
+                (int) Math.ceil((double) list.size() / size)
+        );
+    }
+
 }

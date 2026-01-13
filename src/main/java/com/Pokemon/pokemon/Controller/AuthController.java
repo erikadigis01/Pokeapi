@@ -130,7 +130,7 @@ public class AuthController {
                 Usuario usuario = usuarioService.getById(iduser);
 
                 // Redirigir según rol
-                if (usuario.getRoll().getIdRoll() == 3) { // ADMIN
+                if (usuario.getRoll().getIdRoll() == 1) { // ADMIN
                     return "redirect:/administrador/pokemons";
                 } else {
                     return "redirect:/pokedex";
