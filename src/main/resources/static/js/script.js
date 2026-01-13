@@ -594,3 +594,49 @@ async function cargarPokemonsFavoritos() {
             }], favoritosIds);
     }
 }
+// ======================
+// Funcion del admin 
+// ======================
+
+async function initAdmin() {
+    try {
+        const res = await fetch('/admin/pokemons');
+        const pokemons = await res.json();
+        renderPokemonsAdmin(pokemons);
+    } catch (err) {
+        console.error('Error cargando pokemons admin', err);
+    }
+}
+
+function renderPokemonsAdmin(pokemons) {
+    const grid = document.getElementById('adminPokemonGrid');
+    grid.innerHTML = '';
+
+    pokemons.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'pokemon-card';
+
+        card.innerHTML = `
+            <div class="pokemon-card-header" style="background:${typeColors[p.types[0]]}">
+                <div class="pokemon-id">#${String(p.id).padStart(3, '0')}</div>
+                <div class="pokemon-image-container">
+                    <img src="${p.image}" class="pokemon-image">
+                </div>
+            </div>
+
+            <div class="pokemon-card-body">
+                <h3 class="pokemon-name-card">${p.name.toUpperCase()}</h3>
+                <div class="pokemon-types">
+                    ${p.types.map(type => `<span class="type-badge type-${type}">${type.toUpperCase()}</span>`).join('')}
+                </div>
+                <div class="favoritos-count">
+                    Favoritos: ${p.favoritosCount} veces
+                </div>
+            </div>
+        `;
+        card.addEventListener('click', () => { openModal(p.name); });
+        grid.appendChild(card);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', initAdmin);

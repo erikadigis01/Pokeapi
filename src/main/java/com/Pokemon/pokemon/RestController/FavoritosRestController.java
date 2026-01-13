@@ -2,51 +2,38 @@ package com.Pokemon.pokemon.RestController;
 
 import com.Pokemon.pokemon.JPA.Favoritos;
 import com.Pokemon.pokemon.Service.FavoritosService;
-import com.Pokemon.pokemon.Service.JwtService;
 import com.Pokemon.pokemon.Service.UsuarioService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @RestController
 @RequestMapping("/favoritos")
-@CrossOrigin(origins = "*") // luego lo ajustas si usas auth real
+@CrossOrigin(origins = "*")
 public class FavoritosRestController {
 
-    @Autowired
-    JwtService jwtUtil;
-
-    @Autowired
-    UsuarioService usuarioService;
-
     private final FavoritosService favoritosService;
+    private final UsuarioService usuarioService;
 
-    // Inyección por constructor (OBLIGATORIA)
-    public FavoritosRestController(FavoritosService favoritosService) {
+    public FavoritosRestController(FavoritosService favoritosService, UsuarioService usuarioService) {
         this.favoritosService = favoritosService;
+        this.usuarioService = usuarioService;
     }
 
-    // =========================                                                                    
-    // Toggle favorito
-    // =========================
     @PostMapping("/toggle")
     public ResponseEntity<Map<String, Object>> toggleFavorito(
-            HttpSession session,
+            @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam Integer idPokemon
     ) {
-        String token = (String) session.getAttribute("token");
-
-        if (token == null) {
+        if (userDetails == null) {
             return ResponseEntity.status(401).build();
         }
 
-        String email = jwtUtil.extraerUsername(token);
-        Long idUsuario = usuarioService.getUserIdByEmail(email);
-
+        Long idUsuario = usuarioService.getUserIdByEmail(userDetails.getUsername());
         boolean esFavorito = favoritosService.toggleFavorito(idUsuario, idPokemon);
 
         return ResponseEntity.ok(
@@ -57,23 +44,13 @@ public class FavoritosRestController {
         );
     }
 
-    // =========================
-    // Obtener favoritos por usuario
-    // =========================
     @GetMapping
-    public ResponseEntity<List<Favoritos>> obtenerFavoritos(HttpSession session) {
-
-        String token = (String) session.getAttribute("token");
-        if (token == null) {
+    public ResponseEntity<List<Favoritos>> obtenerFavoritos(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
             return ResponseEntity.status(401).build();
         }
 
-        String email = jwtUtil.extraerUsername(token);
-        Long idUsuario = usuarioService.getUserIdByEmail(email);
-
-        return ResponseEntity.ok(
-                favoritosService.obtenerFavoritos(idUsuario)
-        );
+        Long idUsuario = usuarioService.getUserIdByEmail(userDetails.getUsername());
+        return ResponseEntity.ok(favoritosService.obtenerFavoritos(idUsuario));
     }
-
 }
