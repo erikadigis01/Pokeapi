@@ -31,12 +31,20 @@ let currentPage = 0; // backend usa 0-based
 let totalPages = 0;
 let currentTypeFilter = 'all';
 let currentSearch = '';
+const adminGrid = document.getElementById("adminPokemonGrid");
+const pokemonGrid = document.getElementById("pokemonGrid");
+
+const isAdminView = !!adminGrid;
+let activeGrid = isAdminView ? adminGrid : pokemonGrid;
+
+
+
 const pokemonsPerPage = 20;
 
 const HEART_EMPTY = `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="www.w3.org"><path d="M9 2H5v2H3v2H1v6h2v2h2v2h2v2h2v2h2v2h4v-2h2v-2h2v-2h2v-2h2v-2h2V6h-2V4h-2V2h-4v2h-2v2h-2V4H9V2zm0 2v2h2v2h2V6h2V4h2v2h2v6h-2v2h-2v2h-2v2h-2v2h-2v-2H9v-2H7v-2H5v-2H3V6h2V4h4z" fill="currentColor"/></svg>`;
 const HEART_FULL = `<svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" xmlns="www.w3.org"><path d="M2 6v6h2v2h2v2h2v2h2v2h4v-2h2v-2h2v-2h2v-2h2V6h-2V4h-2V2h-4v2h-2v2h-2V4H9V2H5v2H3v2H2z" /></svg>`;
-// 
-// 
+
+
 // ======================
 // DOM
 // ======================
@@ -46,7 +54,6 @@ const typeFiltersContainer = document.getElementById('typeFilters');
 const filterResults = document.getElementById('filterResults');
 const loading = document.getElementById('loading');
 const noResults = document.getElementById('noResults');
-const pokemonGrid = document.getElementById('pokemonGrid');
 const pagination = document.getElementById('pagination');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
@@ -61,25 +68,19 @@ const userName = document.getElementById('userName');
 
 async function initApp() {
     try {
-        loadUserName();
+        initializeTypeFilters();
 
-        // Si estamos en pokedex
-        if (typeFiltersContainer) {
-            initializeTypeFilters();
+        if (!isAdminView) {
+            // Usuario
             favoritosIds = await cargarFavoritos();
-            await fetchPokemons(currentPage);
         }
 
-        // Si estamos en perfil
-        if (pokemonGrid && !typeFiltersContainer) {
-            favoritosIds = await cargarFavoritos();
-            await cargarPokemonsFavoritos();
-        }
-
+        await fetchList(0);
     } catch (err) {
         console.error('Error inicializando app', err);
     }
 }
+
 
 
 document.addEventListener('DOMContentLoaded', initApp);
@@ -116,13 +117,23 @@ if (modal) {
     });
 }
 
-
 // ======================
 // Type filters
 // ======================
 function initializeTypeFilters() {
     if (!typeFiltersContainer)
-        return;   // 👈 evita que explote en Perfil
+        return;
+
+    typeFiltersContainer.innerHTML = '';
+
+    // Botón ALL
+    const allBtn = document.createElement('button');
+    allBtn.className = 'type-filter-btn active';
+    allBtn.dataset.type = 'all';
+    allBtn.textContent = 'all';
+    allBtn.addEventListener('click', () => filterByType('all'));
+    typeFiltersContainer.appendChild(allBtn);
+
 
     pokemonTypes.forEach(type => {
         const btn = document.createElement('button');
@@ -135,24 +146,34 @@ function initializeTypeFilters() {
 }
 
 
+
 // ======================
 // Fetch
 // ======================
-async function fetchPokemons(page = 0, size = 20, tipe = 'all') {
+
+async function fetchList(page = 0) {
     showLoading(true);
 
     try {
-        const search = navSearchInput.value.trim();
-        const type = currentTypeFilter !== 'all' ? currentTypeFilter : '';
+        const search = navSearchInput?.value?.trim() || '';
+        const type =
+                currentTypeFilter !== 'all'
+                ? currentTypeFilter.toUpperCase()
+                : '';
 
-        let url = `/pokemon/pokemons?page=${page}&size=${pokemonsPerPage}`;
+        let url;
+
+        if (isAdminView) {
+            url = `/admin/pokemons?page=${page}&size=${pokemonsPerPage}`;
+        } else {
+            url = `/pokemon/pokemons?page=${page}&size=${pokemonsPerPage}`;
+        }
 
         if (search) {
-            if (!isNaN(search)) {
+            if (!isNaN(search))
                 url += `&number=${search}`;
-            } else {
+            else
                 url += `&name=${search}`;
-            }
         }
 
         if (type)
@@ -161,11 +182,16 @@ async function fetchPokemons(page = 0, size = 20, tipe = 'all') {
         const res = await fetch(url);
         const data = await res.json();
 
-        allPokemons = data.content;
-        totalPages = data.totalPages;
+        const pokemons = data.content || data.pokemons || data;
+        totalPages = data.totalPages || 1;
 
-        renderPokemons(allPokemons, favoritosIds);
-        updatePagination(data);
+        if (!Array.isArray(pokemons)) {
+            console.error("Formato inesperado del backend:", data);
+            return;
+        }
+
+        renderPokemons(pokemons, favoritosIds);
+        updatePagination();
 
     } catch (err) {
         console.error(err);
@@ -192,7 +218,7 @@ function updateFilterResults() {
 // Render cards
 // ======================
 function renderPokemons(pokemons, favoritosIds) {
-    pokemonGrid.innerHTML = '';
+    activeGrid.innerHTML = '';
 
     if (!pokemons.length) {
         noResults.style.display = 'block';
@@ -203,7 +229,7 @@ function renderPokemons(pokemons, favoritosIds) {
 
     pokemons.forEach(p => {
         const primaryType = p.types[0];
-        const pokemonEsFavorito = favoritosIds.includes(p.id);
+        const pokemonEsFavorito = !isAdminView && favoritosIds.includes(p.id);
 
         const card = document.createElement('div');
         card.className = 'pokemon-card';
@@ -229,13 +255,23 @@ function renderPokemons(pokemons, favoritosIds) {
                     ${typesHTML}
                 </div>
 
-                <button
-                    class="btn-favorite ${pokemonEsFavorito ? 'active' : ''}"
-                    data-id="${p.id}"
-                    aria-label="Agregar a favoritos"
-                >
-                    ${pokemonEsFavorito ? HEART_FULL : HEART_EMPTY}
-                </button>
+                ${isAdminView
+                ? `
+                    <div class="favoritos-container">
+                        <div class="favoritos-count">
+                            ${HEART_FULL} ${p.favoritosCount ?? p.favoritos ?? 0}
+                        </div>
+                    </div>
+                    `
+                : `
+                    <button
+                        class="btn-favorite ${pokemonEsFavorito ? 'active' : ''}"
+                        data-id="${p.id}">
+                        ${pokemonEsFavorito ? HEART_FULL : HEART_EMPTY}
+                    </button>
+`
+                }
+
             </div>
         `;
 
@@ -248,23 +284,27 @@ function renderPokemons(pokemons, favoritosIds) {
 
         // Click favorito → backend
         const btnFavorite = card.querySelector('.btn-favorite');
-        btnFavorite.addEventListener('click', async (e) => {
-            e.stopPropagation();
 
-            const pokemonId = Number(btnFavorite.dataset.id);
-            const esFavorito = await toggleFavorito(pokemonId);
+        if (btnFavorite) {
+            btnFavorite.addEventListener('click', async (e) => {
+                e.stopPropagation();
 
-            if (esFavorito) {
-                favoritosIds.push(pokemonId);
-            } else {
-                favoritosIds = favoritosIds.filter(id => id !== pokemonId);
-            }
+                const pokemonId = Number(btnFavorite.dataset.id);
+                const esFavorito = await toggleFavorito(pokemonId);
 
-            btnFavorite.classList.toggle('active', esFavorito);
-            btnFavorite.innerHTML = esFavorito ? HEART_FULL : HEART_EMPTY;
-        });
+                if (esFavorito) {
+                    favoritosIds.push(pokemonId);
+                } else {
+                    favoritosIds = favoritosIds.filter(id => id !== pokemonId);
+                }
 
-        pokemonGrid.appendChild(card);
+                btnFavorite.classList.toggle('active', esFavorito);
+                btnFavorite.innerHTML = esFavorito ? HEART_FULL : HEART_EMPTY;
+            });
+        }
+
+
+        activeGrid.appendChild(card);
     });
 }
 
@@ -501,7 +541,7 @@ function hexToRgba(hex, alpha) {
 function handleSearch() {
     navClearSearchBtn.style.display = navSearchInput.value ? 'flex' : 'none';
     currentPage = 0;
-    fetchPokemons(currentPage);
+    fetchList(0);
 }
 
 function clearSearch() {
@@ -522,15 +562,16 @@ function filterByType(type) {
             .querySelector(`[data-type="${type}"]`)
             .classList.add('active');
 
-    fetchPokemons(currentPage, pokemonsPerPage, currentTypeFilter);
+    fetchList(0);
 }
 
 function changePage(page) {
     if (page < 0 || page >= totalPages)
         return;
     currentPage = page;
-    fetchPokemons(page);
+    fetchList(page);
 }
+
 
 function updatePagination() {
     pageInfo.textContent = `Página ${currentPage + 1} de ${totalPages}`;
@@ -580,7 +621,7 @@ async function cargarFavoritos() {
 }
 
 async function cargarPokemonsFavoritos() {
-    pokemonGrid.innerHTML = '';
+    activeGrid.innerHTML = '';
 
     for (const id of favoritosIds) {
         const res = await fetch(`/pokemon/${id}`);
@@ -594,19 +635,10 @@ async function cargarPokemonsFavoritos() {
             }], favoritosIds);
     }
 }
+
 // ======================
 // Funcion del admin 
 // ======================
-
-async function initAdmin() {
-    try {
-        const res = await fetch('/admin/pokemons');
-        const pokemons = await res.json();
-        renderPokemonsAdmin(pokemons);
-    } catch (err) {
-        console.error('Error cargando pokemons admin', err);
-    }
-}
 
 function renderPokemonsAdmin(pokemons) {
     const grid = document.getElementById('adminPokemonGrid');
@@ -629,14 +661,16 @@ function renderPokemonsAdmin(pokemons) {
                 <div class="pokemon-types">
                     ${p.types.map(type => `<span class="type-badge type-${type}">${type.toUpperCase()}</span>`).join('')}
                 </div>
-                <div class="favoritos-count">
-                    Favoritos: ${p.favoritosCount} veces
+                <div class="favoritos-container">
+                    <div class="favoritos-count">
+                        ${HEART_FULL} ${p.favoritosCount}
+                    </div>
                 </div>
             </div>
         `;
-        card.addEventListener('click', () => { openModal(p.name); });
+        card.addEventListener('click', () => {
+            openModal(p.name);
+        });
         grid.appendChild(card);
     });
 }
-
-document.addEventListener('DOMContentLoaded', initAdmin);

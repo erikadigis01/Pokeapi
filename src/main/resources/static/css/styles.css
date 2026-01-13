@@ -20,11 +20,11 @@ body {
     line-height: 1.4;
 }
 
-    .container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 2rem 1rem;
-    }
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
 
 
 /* Navbar */
@@ -77,6 +77,7 @@ body {
 }
 
 .navbar-title {
+    font-family: 'Press Start 2P', monospace;
     font-size: 1.5rem;
     font-weight: bold;
     color: #1f2937;
@@ -91,6 +92,7 @@ body {
 .navbar-search-input {
     width: 100%;
     padding: 0.75rem 1rem;
+    font-family: 'Press Start 2P', monospace;
     font-size: 1rem;
     border: 3px solid #1f2937;
     border-radius: 0.5rem;
@@ -184,7 +186,7 @@ body {
         #1f2937 6px,
         transparent 6px,
         transparent 10px
-    );
+        );
 }
 
 
@@ -208,6 +210,7 @@ body {
 }
 
 .filter-title {
+    font-family: 'Press Start 2P', monospace;
     font-size: 1.5rem;
     font-weight: bold;
     color: #1f2937;
@@ -226,6 +229,7 @@ body {
     padding: 0.5rem 1rem;
     border: 3px solid #1f2937;
     border-radius: 0.5rem;
+    font-family: 'Press Start 2P', monospace;
     font-size: 0.875rem;
     font-weight: bold;
     color: white;
@@ -362,10 +366,12 @@ h1 {
     text-align: center;
     color: #374151;
     font-weight: 500;
+    font-family: 'Press Start 2P', monospace;
 }
 
 /* Loading */
 .loading {
+    font-family: 'Press Start 2P', monospace;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -397,6 +403,7 @@ h1 {
 
 /* No Results */
 .no-results {
+    font-family: 'Press Start 2P', monospace;
     background: white;
     border-radius: 1rem;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
@@ -407,6 +414,7 @@ h1 {
 }
 
 .no-results-title {
+    font-family: 'Press Start 2P', monospace;
     font-size: 1.5rem;
     font-weight: bold;
     color: #1f2937;
@@ -414,6 +422,7 @@ h1 {
 }
 
 .no-results-text {
+    font-family: 'Press Start 2P', monospace;
     color: #4b5563;
 }
 
@@ -426,6 +435,7 @@ h1 {
 }
 
 .pokemon-card {
+    font-family: 'Press Start 2P', monospace;
     position: relative;
     background: white;
     border-radius: 0.5rem;
@@ -475,7 +485,7 @@ h1 {
 }
 
 .pokemon-name {
-    font-weight: bold;
+    font-family: 'Press Start 2P', monospace;
     font-size: 1.125rem;
     margin-bottom: 0.5rem;
     color: #1f2937;
@@ -483,7 +493,7 @@ h1 {
 }
 
 .pokemon-name-card {
-    font-weight: bold;
+    font-family: 'Press Start 2P', monospace;
     font-size: 1.125rem;
     margin-bottom: 0.5rem;
     color: #1f2937;
@@ -500,7 +510,7 @@ h1 {
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
     font-size: 0.75rem;
-    font-weight: bold;
+    font-family: 'Press Start 2P', monospace;
     color: white;
     text-transform: uppercase;
 }
@@ -530,11 +540,30 @@ h1 {
 .evolution-card span {
     display: block;
     margin-top: 6px;
+    font-family: 'Press Start 2P', monospace;
     font-size: 0.85rem;
     text-transform: capitalize;
 }
 
+.favoritos-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+}
 
+.favoritos-count {
+    background: #f4f4f4;
+    color: #CC0C0C;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 2rem;
+    padding: 6px 10px;
+    border: 2px solid #111;
+    border-radius: 6px;
+    box-shadow: 2px 2px 0 #111;
+    letter-spacing: 1px;
+    line-height: 1.2;
+    white-space: nowrap;
+}
 /* Pagination */
 .pagination {
     background: white;
@@ -553,7 +582,7 @@ h1 {
     padding: 0.75rem 1.5rem;
     background: #dc2626;
     color: white;
-    font-weight: bold;
+    font-family: 'Press Start 2P', monospace;
     border: none;
     border-radius: 0.5rem;
     cursor: pointer;
@@ -573,7 +602,7 @@ h1 {
 
 .page-info {
     color: #1f2937;
-    font-weight: bold;
+    font-family: 'Press Start 2P', monospace;
     font-size: 1.125rem;
 }
 
@@ -585,7 +614,12 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
+
+    background: none; /* importante */
+    perspective: 1400px;
 }
+
+
 
 .modal-overlay {
     position: absolute;
@@ -609,6 +643,8 @@ h1 {
 }
 
 
+
+
 .modal-close {
     position: absolute;
     top: 1rem;
@@ -619,6 +655,7 @@ h1 {
     border: none;
     border-radius: 50%;
     cursor: pointer;
+    font-family: 'Press Start 2P', monospace;
     font-size: 1.5rem;
     line-height: 1;
     color: white;
@@ -642,6 +679,7 @@ h1 {
 
 .modal-pokemon-id {
     position: absolute;
+    font-family: 'Press Start 2P', monospace;
     font-size: 1.5rem;
     top: 1rem;
     left: 1.5rem;
@@ -650,6 +688,7 @@ h1 {
 
 .modal-pokemon-name {
     text-align: center;
+    font-family: 'Press Start 2P', monospace;
     font-size: 2.25rem;
     font-weight: bold;
     margin: 0.5rem 0 1rem;
@@ -713,18 +752,21 @@ h1 {
 }
 
 .stat-label {
+    font-family: 'Press Start 2P', monospace;
     font-size: 0.875rem;
     color: #4b5563;
     margin-bottom: 0.25rem;
 }
 
 .stat-value {
+    font-family: 'Press Start 2P', monospace;
     font-size: 1.5rem;
     font-weight: bold;
     color: #1f2937;
 }
 
 .section-title {
+    font-family: 'Press Start 2P', monospace;
     font-size: 1.25rem;
     font-weight: bold;
     margin-bottom: 0.75rem;
@@ -742,6 +784,7 @@ h1 {
     padding: 0.5rem 1rem;
     background: #e5e7eb;
     border-radius: 9999px;
+    font-family: 'Press Start 2P', monospace;
     font-size: 0.875rem;
     color: #1f2937;
     text-transform: capitalize;
@@ -765,6 +808,7 @@ h1 {
 }
 
 .stat-name {
+    font-family: 'Press Start 2P', monospace;
     font-size: 0.875rem;
     font-weight: 500;
     color: #374151;
@@ -772,6 +816,7 @@ h1 {
 }
 
 .stat-number {
+    font-family: 'Press Start 2P', monospace;
     font-size: 0.875rem;
     font-weight: bold;
     color: #1f2937;
@@ -821,15 +866,23 @@ h1 {
     transform: scale(1.1);
 }
 
+
+
 /* Evita que los clics en el propio dibujo del SVG fallen */
 .btn-favorite svg {
     pointer-events: none;
 }
 
 @keyframes retro-beat {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.15); } /* Salta de golpe */
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.15);
+    } /* Salta de golpe */
+    100% {
+        transform: scale(1);
+    }
 }
 
 
@@ -949,3 +1002,25 @@ h1 {
         font-size: 0.75rem;
     }
 }
+
+@keyframes pokemonFlip {
+    0% {
+        transform: rotateY(120deg) scale(0.7);
+        opacity: 0;
+    }
+
+    40% {
+        transform: rotateY(-20deg) scale(1.05);
+        opacity: 1;
+    }
+
+    70% {
+        transform: rotateY(10deg) scale(0.98);
+    }
+
+    100% {
+        transform: rotateY(0deg) scale(1);
+    }
+}
+
+
