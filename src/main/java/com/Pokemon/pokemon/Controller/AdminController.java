@@ -132,4 +132,85 @@ public class AdminController {
 
         return "redirect:/administrador/detail/" + usuario.getEmail();
     }
+    
+    @GetMapping("/users")
+    public String getAllUsers(  HttpServletRequest request, 
+                                RedirectAttributes redirectAttributes,
+                                Model model){
+        
+        String token = null;
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("JWT_TOKEN".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                }
+            }
+        }
+
+        if (token == null) {
+            redirectAttributes.addAttribute("status", "Su sesión ha caducado");
+            return "redirect:/login";
+        }
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Result<Usuario>> response =
+            restTemplate.exchange(url + "users",
+                                  HttpMethod.GET,
+                                  entity,
+                                  new ParameterizedTypeReference<Result<Usuario>>() {});
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            
+            Result resultUsuario = response.getBody();
+            
+            model.addAttribute("usuarios", resultUsuario.objects);
+        }
+    
+        return "AdministradorPerfil";
+    }
+    
+    @GetMapping("/users/delete/{id}")
+    public String deleteUser(@PathVariable("id") int id, 
+                                HttpServletRequest request, 
+                                RedirectAttributes redirectAttributes,
+                                Model model) {
+        
+        String token = null;
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("JWT_TOKEN".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                }
+            }
+        }
+
+        if (token == null) {
+            redirectAttributes.addAttribute("status", "Su sesión ha caducado");
+            return "redirect:/login";
+        }
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Result<Usuario>> responseDelete =
+            restTemplate.exchange(url + "users/" + id,
+                                  HttpMethod.GET,
+                                  entity,
+                                  new ParameterizedTypeReference<Result<Usuario>>() {});
+
+        if (responseDelete.getStatusCode().is2xxSuccessful()) {
+            
+            Result resultUsuario = responseDelete.getBody();
+            
+            model.addAttribute("usuarios", resultUsuario.objects);
+        }
+    
+        return "redirect:/administrador/users";
+    }
 }

@@ -62,8 +62,7 @@ public class AuthController {
         usuario.setEmail(email);
         usuario.setPassword(password);
         usuario.setRoll(new Roll());
-        usuario.getRoll().setIdRoll(4); // rol por defecto
-
+        usuario.getRoll().setIdRoll(2);
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

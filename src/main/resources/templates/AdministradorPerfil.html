@@ -3,15 +3,105 @@
       xmlns:layout="https://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{Layout}">
     
-    <section layout:fragment="content">
+    <section class="container my-5" layout:fragment="content">
         
         <!--BREADCRUMBS-->
         <nav class="breadcrumb">
             <a href="/">Inicio</a> /
             <a href="/pokedex">Pokédex</a> /
-            <span>Perfil</span>
+            <span>Usuarios</span>
         </nav>
-        <!--PERFIL POKEMON-->
-        
+        <!--USUARIOS-->
+        <div> 
+            <form>
+                <div class="row d-flex justify-content-between my-1">
+                    <div class="col-8 justify-content-start text-secondary">
+                        <h3 class="h-3">Usuarios</h3>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+        <div class="table-responsive">
+            <table class=" table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-black-50">#Id</th>
+<!--                        <th scope="col-1" class="text-black-50">Imagen</th>-->
+                        <th scope="col" class="text-black-50">
+                            Nombre
+                        </th>
+                        <th scope="col" class="text-black-50">
+                            Email
+                        </th>
+<!--                        <th scope="col" class="text-black-50">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            Direccion
+                        </th>-->
+<!--                        <th scope="col" class="text-black-50">
+                            <i class="bi bi-telephone-fill"></i>
+                            Contacto
+                        </th>-->
+<!--                        <th scope="col-1" class="text-black-50">Roll</th>
+                        <th scope="col-1" class="text-black-50">Status</th>
+-->                        <th scope="col" class="text-black-50">Accion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="usuario, iterStat: ${usuarios}" >
+                        <th  scope="row"><span th:text="${iterStat.index + 1}"></span></th>
+<!--                        <td class="col-1">
+                            <img th:src="${usuario.Imagen == null} ? 'https://mdbootstrap.com/img/Photos/Others/placeholder-avatar.jpg' : 'data:image/jpeg;base64,' + ${usuario.Imagen}"
+                                 alt="Foto de perfil" class="rounded-circle" id="imagen" width="42">
+                        </td>-->
+                        <td class="col" th:text="|${usuario.nombre} ${usuario.apellidoPaterno}|"></td>
+                        <td class="col" th:text="|${usuario.nombre} ${usuario.email}|"></td>
+<!--                        <td class="col-4">
+                            <ul th:each="direccion, iterStat: ${usuario.Direccion}">
+                                <li th:text="|Calle: ${direccion.Calle}, Numero Interior: ${direccion.NumeroInterior}, Numero Exterior: ${direccion.NumeroExterior}, Numero Exterior: ${direccion.NumeroExterior}|"></li>
+                            </ul>
+
+                        </td>-->
+<!--                        <td>
+                            <ul>
+                                <li>Celular: <span th:text="${usuario.Celular}"></span></li>
+                                <li>Telefono: <span th:text="${usuario.Telefono}"></span></li>
+                                <li>Email: <span th:text="${usuario.Email}"></span></li>
+                            </ul>
+                        </td>-->
+<!--                        <td class="">
+                            <div class="badge text-bg-secondary"><span th:text="${usuario.Roll.NombreRoll}"></span></div>
+                        </td>
+                        <td class="col-1">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input status-switch" 
+                                       type="checkbox" 
+                                       role="switch" 
+                                       id="switchCheckChecked" 
+                                       th:attr="data-id=${usuario.IdUsuario}"
+                                       th:checked="${usuario.Status == 1}">
+                            </div>
+                        </td>
+                        <td class="col-1">
+                            <span th:text="${usuario.IsVerified == 1 ? 'Verificado' : 'No Verificado'}"
+                                th:classappend="${usuario.IsVerified == 1 ? ' badge text-bg-info' : ' badge text-bg-warning'}">
+                            </span>
+                        </td>-->
+                        <td class=" col-3">
+                            <!--th:href="@{/usuario/detail/{id}(id=${usuario.IdUsuario})}"-->
+                            <a type="button" class="btn btn-primary btn-sm"> 
+                                <i class="bi bi-pencil-square"></i>
+
+                            </a>
+                            <!--th:onclick="|confirmarEliminacionUsuario(${usuario.IdUsuario})|"-->
+                            <button type="button" class="btn btn-danger btn-sm" 
+                                    th:onclick="|confirmarEliminacionUsuario(${usuario.id})|"> 
+                                <i class="bi bi-trash3-fill"></i>
+                            </button>
+                        </td>
+                    </tr> 
+                </tbody>
+            </table>
+        </div>
     </section>
 </html>
