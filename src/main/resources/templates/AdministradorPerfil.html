@@ -9,8 +9,47 @@
         <nav class="breadcrumb">
             <a href="/">Inicio</a> /
             <a href="/pokedex">Pokédex</a> /
-            <span>Usuarios</span>
+            <span></span>
         </nav>
+        <div class="perfil-container">
+            <!-- Datos del Maestro Pokémon -->
+            <section class="perfil-info">
+                <img src="https://static.wikia.nocookie.net/universecw/images/0/0f/Ash_Ketchum.png/revision/latest?cb=20201216120309&path-prefix=es" alt="Maestro Pokémon" class="perfil-img">
+                <div class="perfil-datos">
+                    <h2 class="perfil-nombre"><span th:text="${usuario.nombre}"></span></h2>
+                    <div class="badges">
+                        <span class="badge badge-region">Maestro Pokémon</span>
+                        <span class="badge badge-region">Región: Kanto</span>
+                    </div>
+                    <button id="btnEditarPerfil" class="btn-social">
+                        Editar Perfil
+                    </button>
+
+                </div>
+                <div class="perfil-stats">
+                    <div class="stat-item rojo">
+                        <span class="stat-label">Batallas Ganadas</span>
+                        <div class="stat-bar">
+                            <div class="fill" style="width: 80%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="stat-item amarillo">
+                        <span class="stat-label">Velocidad</span>
+                        <div class="stat-bar">
+                            <div class="fill" style="width: 65%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="stat-item azul">
+                        <span class="stat-label">Pokémon Capturados</span>
+                        <div class="stat-bar">
+                            <div class="fill" style="width: 90%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
         <!--USUARIOS-->
         <div> 
             <form>
