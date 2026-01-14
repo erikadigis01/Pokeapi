@@ -65,7 +65,7 @@ public class AuthRestController {
             String password = passwordEncoder.encode(usuario.getPassword());
             usuario.setPassword(password);
             //CREAR USUARIO
-            Usuario newUsuario = usuarioService.add(usuario);
+            Result newUsuario = usuarioService.add(usuario);
             result.object = newUsuario;
             result.correct = true;
             result.errorMessage = "Se agrego un nuevo usuario correctamente";

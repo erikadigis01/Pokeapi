@@ -27,6 +27,16 @@ public class Usuario {
 
     @Column(name = "password")
     private String password;
+    
+    @Lob
+    @Column(name = "imagen")
+    private String Imagen;
+
+    @Column(name = "isverified")
+    private Integer IsVerified;
+
+    @Column(name = "verificationtoken")
+    private String VerificationToken;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idroll", nullable = false)
@@ -92,6 +102,32 @@ public class Usuario {
         this.password = password;
     }
 
+    public String getImagen() {
+        return Imagen;
+    }
+
+    public void setImagen(String Imagen) {
+        this.Imagen = Imagen;
+    }
+
+    public Integer getIsVerified() {
+        return IsVerified;
+    }
+
+    public void setIsVerified(Integer IsVerified) {
+        this.IsVerified = IsVerified;
+    }
+
+    public String getVerificationToken() {
+        return VerificationToken;
+    }
+
+    public void setVerificationToken(String VerificationToken) {
+        this.VerificationToken = VerificationToken;
+    }
+    
+    
+
     public Roll getRoll() {
         return roll;
     }
@@ -106,5 +142,9 @@ public class Usuario {
 
     public void setFavoritos(List<Favoritos> favoritos) {
         this.favoritos = favoritos;
+    }
+
+    public Usuario orElse(Object object) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

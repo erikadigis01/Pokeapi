@@ -8,10 +8,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @SpringBootApplication
 public class PokemonApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PokemonApplication.class, args);
-                PasswordEncoder encoder = new BCryptPasswordEncoder(12); 
-                System.out.println(encoder.encode("1234"));
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(PokemonApplication.class, args);
+        PasswordEncoder encoder = new BCryptPasswordEncoder(12);
+        System.out.println(encoder.encode("1234"));
+    }
 
 }
