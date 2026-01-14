@@ -183,3 +183,23 @@ async function toggleFavorito(pokemonId) {
     const data = await res.json();
     return data.favorito;
 }
+
+//============================================
+//FUNCION PARA CONFIRMAR LA ELIMINACION DE UN USUARIO
+//============================================
+
+function confirmarEliminacionUsuario(id){
+    Swal.fire({
+    title: "Estas seguro de eliminar este usuario?",
+            text: "No puedes revertir esta accion!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, eliminalo"
+    }).then((result) => {
+    if (result.isConfirmed) {
+    window.location.href = "/administrador/users/delete/" + id;
+    }
+  });
+}
