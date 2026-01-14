@@ -82,7 +82,7 @@ public class PokemonRestController {
             usuario.setRoll(roll);
             //sacar el password y asignarlo
             usuario.setPassword(user.getPassword());
-            //Lista de Favoritos
+            //actualizar la lista de pokemones
             List<Favoritos> favoritos = user.getFavoritos();
             usuario.setFavoritos(favoritos);
             //mandar al restcontroller 
