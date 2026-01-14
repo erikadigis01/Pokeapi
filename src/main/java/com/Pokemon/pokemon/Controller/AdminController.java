@@ -80,8 +80,21 @@ public class AdminController {
                                   HttpMethod.GET,
                                   entity,
                                   new ParameterizedTypeReference<Result<Usuario>>() {});
+        
+        HttpHeaders headersUsers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        HttpEntity<?> entityUsers = new HttpEntity<>(headers);
+
+        RestTemplate restTemplateUsers = new RestTemplate();
+        ResponseEntity<Result<Usuario>> responseUsers =
+            restTemplate.exchange(url + "users",
+                                  HttpMethod.GET,
+                                  entity,
+                                  new ParameterizedTypeReference<Result<Usuario>>() {});
 
         if (response.getStatusCode().is2xxSuccessful()) {
+            Result resultUsuario = response.getBody();
+            model.addAttribute("usuarios", resultUsuario.objects);
             Usuario usuario = (Usuario) response.getBody().object;
             model.addAttribute("usuario", usuario);
         }
@@ -122,6 +135,8 @@ public class AdminController {
                 requestEntity,
                 new ParameterizedTypeReference<Result<Usuario>>() {}
             );
+        
+        
 
         if (responseEntityUsuario.getStatusCode().value() == 201) {
             Result resultUsuario = responseEntityUsuario.getBody();
