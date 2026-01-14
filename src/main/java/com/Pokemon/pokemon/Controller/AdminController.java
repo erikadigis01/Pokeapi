@@ -93,7 +93,7 @@ public class AdminController {
                                   new ParameterizedTypeReference<Result<Usuario>>() {});
 
         if (response.getStatusCode().is2xxSuccessful()) {
-            Result resultUsuario = response.getBody();
+            Result resultUsuario = responseUsers.getBody();
             model.addAttribute("usuarios", resultUsuario.objects);
             Usuario usuario = (Usuario) response.getBody().object;
             model.addAttribute("usuario", usuario);
