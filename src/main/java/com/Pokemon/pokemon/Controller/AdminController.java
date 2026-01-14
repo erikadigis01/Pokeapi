@@ -4,10 +4,13 @@ package com.Pokemon.pokemon.Controller;
 import com.Pokemon.pokemon.DTO.PokemonAdminCardDTO;
 import com.Pokemon.pokemon.JPA.Result;
 import com.Pokemon.pokemon.JPA.Usuario;
+import com.Pokemon.pokemon.Service.JwtService;
 import com.Pokemon.pokemon.Service.PokemonService;
+import com.Pokemon.pokemon.Service.UsuarioService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -28,8 +31,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/administrador")
 public class AdminController {
+    
+    @Autowired
+    JwtService jwtService;
   
-
+    @Autowired
+    UsuarioService usuarioService;
+    
     private final PokemonService pokemonService;
     
     private final String url = "http://localhost:8080/admin/";
@@ -215,7 +223,7 @@ public class AdminController {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Result<Usuario>> responseDelete =
             restTemplate.exchange(url + "users/" + id,
-                                  HttpMethod.GET,
+                                  HttpMethod.DELETE,
                                   entity,
                                   new ParameterizedTypeReference<Result<Usuario>>() {});
 
@@ -225,7 +233,14 @@ public class AdminController {
             
             model.addAttribute("usuarios", resultUsuario.objects);
         }
-    
-        return "redirect:/administrador/users";
+        //buscar el email 
+        String email = jwtService.extraerUsername(token);
+        //buscar el id usuario 
+        Long idAdmin = usuarioService.getUserIdByEmail(email);
+        
+        //buscar usuario
+        Usuario admin = usuarioService.getById(idAdmin);
+        
+        return "redirect:/administrador/detail/" + admin.getEmail();
     }
 }
