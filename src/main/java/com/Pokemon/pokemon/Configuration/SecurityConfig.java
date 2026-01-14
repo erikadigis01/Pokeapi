@@ -49,7 +49,13 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**", "/login/**", "/error/**").permitAll()
+                .requestMatchers("/auth/**",
+                        "/login/**", 
+                        "/error/**",
+                        "/auth/forgot-password",
+                        "/auth/reset-password",
+                        "/api/verify",
+                        "/api/resend-verification").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                 .requestMatchers("/pokemon/pokemons").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/pokemon/detail/**").hasAnyRole("USER", "ADMIN")
