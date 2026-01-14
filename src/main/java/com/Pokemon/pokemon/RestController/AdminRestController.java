@@ -1,6 +1,6 @@
-
 package com.Pokemon.pokemon.RestController;
 
+import com.Pokemon.pokemon.DTO.PageResponse;
 import com.Pokemon.pokemon.DTO.PokemonAdminCardDTO;
 import com.Pokemon.pokemon.JPA.Favoritos;
 import com.Pokemon.pokemon.JPA.Result;
@@ -18,9 +18,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController 
+@RestController
 @RequestMapping("/admin")
 public class AdminRestController {
 
@@ -32,10 +33,19 @@ public class AdminRestController {
     public AdminRestController(PokemonService pokemonService) {
         this.pokemonService = pokemonService;
     }
+
     @GetMapping("/pokemons")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<PokemonAdminCardDTO>> listarPokemonsConFavoritos() {
-        return ResponseEntity.ok(pokemonService.getPokemonsConFavoritos());
+    public ResponseEntity<PageResponse<PokemonAdminCardDTO>> listarPokemonsAdmin(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) Integer number
+    ) {
+        return ResponseEntity.ok(
+                pokemonService.getAdminPokemons(page, size, name, type, number)
+        );
     }
     
     @GetMapping("/detail/{email}")
