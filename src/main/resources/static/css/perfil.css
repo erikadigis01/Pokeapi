@@ -219,6 +219,7 @@ body {
 }
 
 .pokemon-id {
+    font-family: 'Press Start 2P', monospace;
     position: absolute;
     top: 8px;
     right: 12px;
@@ -231,13 +232,16 @@ body {
 }
 
 .pokemon-card-body {
+    font-family: 'Press Start 2P', monospace;
     padding: 1rem;
 }
 
 .pokemon-name-card {
-    text-align: center;
-    font-weight: bold;
-    margin-bottom: .5rem;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+    color: #1f2937;
+    text-transform: uppercase;
 }
 
 .pokemon-types {
@@ -251,62 +255,67 @@ body {
 ========================= */
 
 .type-badge {
+    font-family: 'Press Start 2P', monospace;
     padding: .3rem .8rem;
     border-radius: 999px;
     font-size: .7rem;
     color: white;
 }
 
-.type-fire{
-    background:#F08030;
+/* Type Colors */
+.type-normal {
+    background-color: #A8A878;
 }
-.type-water{
-    background:#6890F0;
+.type-fire {
+    background-color: #F08030;
 }
-.type-grass{
-    background:#78C850;
+.type-water {
+    background-color: #6890F0;
 }
-.type-electric{
-    background:#F8D030;
+.type-electric {
+    background-color: #F8D030;
 }
-.type-ice{
-    background:#98D8D8;
+.type-grass {
+    background-color: #78C850;
 }
-.type-fighting{
-    background:#C03028;
+.type-ice {
+    background-color: #98D8D8;
 }
-.type-poison{
-    background:#A040A0;
+.type-fighting {
+    background-color: #C03028;
 }
-.type-ground{
-    background:#E0C068;
+.type-poison {
+    background-color: #A040A0;
 }
-.type-flying{
-    background:#A890F0;
+.type-ground {
+    background-color: #E0C068;
 }
-.type-psychic{
-    background:#F85888;
+.type-flying {
+    background-color: #A890F0;
 }
-.type-bug{
-    background:#A8B820;
+.type-psychic {
+    background-color: #F85888;
 }
-.type-rock{
-    background:#B8A038;
+.type-bug {
+    background-color: #A8B820;
 }
-.type-ghost{
-    background:#705898;
+.type-rock {
+    background-color: #B8A038;
 }
-.type-dragon{
-    background:#7038F8;
+.type-ghost {
+    background-color: #705898;
 }
-.type-dark{
-    background:#705848;
+.type-dragon {
+    background-color: #7038F8;
 }
-.type-steel{
-    background:#B8B8D0;
+.type-dark {
+    background-color: #705848;
 }
-.type-fairy{
-    background:#EE99AC;
+.type-steel {
+    background-color: #B8B8D0;
+}
+.type-fairy {
+    background-color: #EE99AC;
 }
 
 /* =========================

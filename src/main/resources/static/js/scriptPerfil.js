@@ -141,7 +141,7 @@ function renderPokemonCard(p) {
         </div>
 
         <div class="pokemon-card-body">
-            <h3>${p.name.toUpperCase()}</h3>
+            <h3 class="pokemon-name-card">${p.name.toUpperCase()}</h3>
             <div class="pokemon-types">${typesHTML}</div>
 
             <button class="btn-favorite ${esFavorito ? 'active' : ''}" data-id="${p.id}">
