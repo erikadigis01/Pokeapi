@@ -42,9 +42,7 @@ public class VerificationTokenService {
 
     public boolean resendVerification(String email) {
 
-        Usuario usuario = userRepository
-                .findByEmail(email)
-                .orElse(null);
+        Usuario usuario = userRepository.findByEmail(email);
 
         if (usuario == null) {
             return false;

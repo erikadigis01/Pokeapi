@@ -409,6 +409,35 @@ select {
     box-shadow: 0 4px 0 #FF1744;
 }
 
+.pk-retro-btn {
+    display: block;   /* clave */
+    margin: 20px auto;       /* centra horizontalmente */
+    padding: 14px 10px;
+    background: #ffcb05;
+    color: #4463C7;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    text-decoration: none;
+    border: 3px solid #4463C7;
+    border-radius: 6px;
+    box-shadow: 4px 4px 0 #4463C7;
+    transition: all 0.12s ease-in-out;
+}
+
+.pk-retro-btn:hover {
+    background: #ffe066;
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 #4463C7;
+    text-decoration: none;
+    color: #4463C7;
+}
+
+.pk-retro-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 #2b2b2b;
+}
+
+
 /* Listas y enlaces (solo presentes en error.css) */
 ul {
     list-style-type: none;

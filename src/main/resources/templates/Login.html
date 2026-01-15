@@ -48,6 +48,7 @@
                                 id="email" 
                                 name="email" 
                                 placeholder="entrenador@pokemon.com" 
+                                th:value="${email}"
                                 required
                                 />
                         </div>
@@ -64,20 +65,34 @@
                                 />
                         </div>
 
-                        <!-- Recordarme y Olvidé contraseña -->
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="remember" name="remember" />
-                            <label for="remember">Recordarme</label>
+                        <div th:if="${accountStatus == 'UNVERIFIED'}" class="alert alert-warning mt-3 text-center">
+
+                            <p>Tu cuenta aún no ha sido verificada.</p>
+
+                            <button id="btnResend"
+                                    class="pk-retro-btn"
+                                    onclick="reenviarVerificacion()">
+                                Verificar Cuenta
+                            </button>
+                            <div >
+                                <p id="resendMsg" class="text-success mt-2" style="display:none;">
+                                    Correo enviado. Revisa tu bandeja de entrada.
+                                </p>
+                            </div>
                         </div>
 
-                        <div class="forgot-password">
-                            <a href="#">¿Olvidaste tu contraseña?</a>
+                        <div>
+
+                            <!-- Recordarme y Olvidé contraseña -->
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="remember" name="remember" />
+                                <label for="remember">Recordarme</label>
+                            </div>
+
+                            <div class="forgot-password">
+                                <a href="#">¿Olvidaste tu contraseña?</a>
+                            </div>
                         </div>
-                        <span 
-                            th:if="${error != null}" 
-                            th:text="${error}" 
-                            class="error-message">
-                        </span>
 
                         <!-- Botón Submit -->
                         <button type="submit" class="btn-submit">
@@ -120,6 +135,44 @@
                 </p>
             </div>
         </div>
+
+        <script>
+            function reenviarVerificacion() {
+                const email = document.getElementById("email").value;
+
+                if (!email) {
+                    alert("Escribe tu correo primero");
+                    return;
+                }
+
+                const btn = document.getElementById("btnResend");
+                const msg = document.getElementById("resendMsg");
+
+                btn.disabled = true;
+                btn.innerText = "Enviando...";
+
+                fetch("/api/resend-verification", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({email})
+                })
+                        .then(res => {
+                            if (res.ok) {
+                                btn.style.display = "none";
+                                msg.style.display = "block";
+                            } else {
+                                btn.disabled = false;
+                                btn.innerText = "Reenviar correo";
+                                res.text().then(t => alert(t));
+                            }
+                        });
+            }
+
+        </script>
+
+
         <script>
 //            console.log("Script cargado");
 //            document.getElementById("loginForm")
