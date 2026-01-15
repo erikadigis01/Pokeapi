@@ -38,12 +38,19 @@ const modalEditar = document.getElementById("modal-editar");
 const btnEditar = document.getElementById("btnEditarPerfil");
 const btnCerrar = document.querySelector(".close");
 
+// Modal editar usuario
+const modalEditarUsuario = document.getElementById("modal-editarUsuario");
+const btnEditarUsuario = document.getElementById("btnEditarPerfilUsuario");
+const btnAgregarUsuario = document.getElementById("btnAgregarPerfilUsuario");
+const btnCerrarUsuario = document.getElementById("closeUsuario");
 
 // ======================
 // Init
 // ======================
 document.addEventListener("DOMContentLoaded", async () => {
+    var id = 0;
     initModalPerfil();
+    AgregarEditarUsuario(id);
 
     try {
         favoritosIds = await cargarFavoritos();
@@ -203,3 +210,39 @@ function confirmarEliminacionUsuario(id){
     }
   });
 }
+
+// Referencias
+const inputNombre = document.getElementById("nombreUser");
+
+// Función principal
+function AgregarEditarUsuario(id) {
+    // Mostrar modal
+     btnEditarUsuario.addEventListener("click", () => {
+        modalEditarUsuario.style.display = "block";
+        // Si hay id, hay que traer los datos con el id
+        if (id !== null && id !== undefined) {
+            inputNombre.value = "Hola Mundo"; 
+            //hacer la peticion asincrona para traer los datos por get by id
+        } else {
+            inputNombre.value = ""; 
+        }
+    });
+    
+    btnAgregarUsuario.addEventListener("click", () => {
+        modalEditarUsuario.style.display = "block";
+    });
+    
+    // Cerrar modal con la X
+    btnCerrarUsuario.addEventListener("click", () => {
+        modalEditarUsuario.style.display = "none";
+    });
+
+    // Cerrar modal al hacer clic fuera
+    window.addEventListener("click", e => {
+        if (e.target === modalEditarUsuario) {
+            modalEditarUsuario.style.display = "none";
+        }
+    });
+
+}
+
