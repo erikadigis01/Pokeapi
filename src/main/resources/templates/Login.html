@@ -22,16 +22,23 @@
                     <h2 class="titulo-login">LOGIN</h2>
                     <p class="subtitulo">¡Continúa tu aventura!</p>
                 </div>
-                <span th:if="${mensaje != null}" th:text="${mensaje}" class="success-message"></span>
-                <span th:if="${error != null}" th:text="${error}" class="error-message"></span>
-                <span th:if="${status != null}" th:text="${status}" class="error-message"></span>
+                <span th:if="${mensaje != null and mensaje != ''}"
+                      th:text="${mensaje}"
+                      class="success-message"></span>
+
+                <span th:if="${error != null and error != ''}"
+                      th:text="${error}"
+                      class="error-message"></span>
+
+                <span th:if="${status != null and status != ''}"
+                      th:text="${status}"
+                      class="error-message"></span>
                 <!-- Formulario -->
                 <div class="form-container" >
                     <div class="form-border-top"></div>
 
                     <!-- Icono Pikachu -->
                     <div class="pikachu-icon">⚡</div>
-
                     <form id="loginForm" class="" th:action="@{/login}" method="post">
                         <!-- Email -->
                         <div class="form-group">
@@ -79,19 +86,19 @@
                     </form>
 
                     <!-- Divider -->
-                    <div class="divider">
-                        <span>O continúa con</span>
-                    </div>
+                    <!--                    <div class="divider">
+                                            <span>O continúa con</span>
+                                        </div>-->
 
                     <!-- Social Login Buttons -->
-                    <div class="social-login">
-                        <button class="btn-social" onclick="socialLogin('Google')">
-                            🔴 Google
-                        </button>
-                        <button class="btn-social" onclick="socialLogin('Facebook')">
-                            🔵 Facebook
-                        </button>
-                    </div>
+                    <!--                    <div class="social-login">
+                                            <button class="btn-social" onclick="socialLogin('Google')">
+                                                🔴 Google
+                                            </button>
+                                            <button class="btn-social" onclick="socialLogin('Facebook')">
+                                                🔵 Facebook
+                                            </button>
+                                        </div>-->
 
                     <!-- Pokeballs decorativas footer -->
                     <div class="pokeballs-footer">
@@ -113,7 +120,7 @@
                 </p>
             </div>
         </div>
-        <script> 
+        <script>
 //            console.log("Script cargado");
 //            document.getElementById("loginForm")
 //                    .addEventListener("submit", async (event) => {
@@ -139,5 +146,5 @@
 //                        } 
 //                    }); 
         </script>
-       </body>
+    </body>
 </html>
