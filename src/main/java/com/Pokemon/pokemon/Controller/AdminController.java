@@ -15,6 +15,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,7 +42,8 @@ public class AdminController {
     private final PokemonService pokemonService;
     
     private final String url = "http://localhost:8080/admin/";
-
+    private final String url2 = "http://localhost:8080/auth/";
+    
     public AdminController(PokemonService pokemonService) {
         this.pokemonService = pokemonService;
     }
@@ -105,6 +107,10 @@ public class AdminController {
             model.addAttribute("usuarios", resultUsuario.objects);
             Usuario usuario = (Usuario) response.getBody().object;
             model.addAttribute("usuario", usuario);
+            model.addAttribute("user", new Usuario());
+            redirectAttributes.addFlashAttribute("perfilMessage", 
+                    "Tu perfil se actualizo correctamente.");
+            
         }
 
         return "AdministradorPerfil";
@@ -151,6 +157,9 @@ public class AdminController {
             Usuario user = (Usuario) resultUsuario.object;
             model.addAttribute("usuario", user);
             model.addAttribute("email", user.getEmail());
+            redirectAttributes.addFlashAttribute("perfilMessage", 
+                    "Tu perfil se actualizo correctamente.");
+            
         }
 
         return "redirect:/administrador/detail/" + usuario.getEmail();
@@ -232,6 +241,9 @@ public class AdminController {
             Result resultUsuario = responseDelete.getBody();
             
             model.addAttribute("usuarios", resultUsuario.objects);
+            redirectAttributes.addFlashAttribute("mensaje", 
+                    "Usuario eliminado exitosamente.");
+            
         }
         //buscar el email 
         String email = jwtService.extraerUsername(token);
@@ -242,5 +254,70 @@ public class AdminController {
         Usuario admin = usuarioService.getById(idAdmin);
         
         return "redirect:/administrador/detail/" + admin.getEmail();
+    }
+    
+    @PostMapping("/agregarEditar")
+    public String AgregarEditar(@ModelAttribute("user") Usuario user,
+                                HttpServletRequest request,
+                                RedirectAttributes redirectAttributes) {
+//        VERIFICAR SESION
+        String token = null;
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("JWT_TOKEN".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                }
+            }
+        }
+
+        if (token == null) {
+            redirectAttributes.addAttribute("status", "Su sesión ha caducado");
+            return "redirect:/login";
+        }
+        
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Usuario> requestEntity = new HttpEntity<>(user, headers);
+
+        
+        //si tiene id usuario es 0 es agregar 
+        if(user.getId() == null) {
+
+            try {
+                
+                ResponseEntity<Result<Usuario>> responseEntityUsuario =
+                    restTemplate.exchange(
+                        url2 + "/addUsuario",
+                        HttpMethod.POST,
+                        requestEntity,
+                        new ParameterizedTypeReference<Result<Usuario>>() {}
+                    );
+
+                if (responseEntityUsuario.getStatusCode().value() == 201) {
+                    redirectAttributes.addFlashAttribute("mensaje", 
+                    "Usuario creado exitosamente.");
+                } 
+
+            } catch (Exception ex) {
+                    redirectAttributes.addFlashAttribute("error", "No se pudo crear el usuario: " + ex.getMessage());
+                  
+            }
+
+        } else { //es editar 
+
+        }
+        
+//        REDIRECCIONAR AL PERFIL 
+        //buscar el email 
+        String email = jwtService.extraerUsername(token);
+        //buscar el id usuario 
+        Long idAdmin = usuarioService.getUserIdByEmail(email);
+        
+        //buscar usuario
+        Usuario admin = usuarioService.getById(idAdmin);
+        
+        return "redirect:/administrador/detail/" + admin.getEmail();
+    
     }
 }

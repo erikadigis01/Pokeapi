@@ -11,6 +11,7 @@
             <a href="/administrador/pokemons">Pokédex</a> /
             <span>Administrador</span>
         </nav>
+        <span th:if="${perfilMessage != null}" th:text="${perfilMessage}" class="success-message usuario-container" style="display: flex; justify-content: space-between; align-items: center;"></span>
         <div class="perfil-container">
             <!-- Datos del Maestro Pokémon -->
             <section class="perfil-info">
@@ -51,104 +52,138 @@
             </section>
         </div>
         <!--USUARIOS-->
-        <div> 
-            <form>
-                <div class="row d-flex justify-content-between my-1">
-                    <div class="col-8 justify-content-start text-secondary">
-                        <h3 class="h-3">Usuarios</h3>
-                    </div>
-                </div>
-            </form>
-
-        </div>
-        <div class="row justify-content-end">
-            <div class="col-2 d-flex justify-content-end">
-                <a type="button" class="btn btn-success"  th:href="@{/usuario/add}">
-                    <i class="bi bi-plus-lg"></i>
+        <div class="usuario-container" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1 class="titulo-pokemon">Usuarios</h1>
+            </div>
+            <div>
+                <button class="btn-agregar"
+                        th:onclick="|AgregarEditarUsuario(0)|"
+                        id="btnAgregarPerfilUsuario">
                     Agregar
-                </a>
+                </button>
             </div>
         </div>
-        <div class="table-responsive">
-            <table class=" table table-hover table-striped">
+        <!--MENSAJES DE ESTATUS-->
+        <span th:if="${mensaje != null}" th:text="${mensaje}" class="success-message usuario-container" style="display: flex; justify-content: space-between; align-items: center;"></span>
+        <span th:if="${error != null}" th:text="${error}" class="error-message usuario-container" style="display: flex; justify-content: space-between; align-items: center;"></span>
+
+        <!--TABLA DE USUARIOS-->
+        <div class="table-responsive perfil-table">
+            <table class="pokemon-table">
                 <thead>
                     <tr>
-                        <th scope="col" class="text-black-50">#Id</th>
-<!--                        <th scope="col-1" class="text-black-50">Imagen</th>-->
-                        <th scope="col" class="text-black-50">
-                            Nombre
-                        </th>
-                        <th scope="col" class="text-black-50">
-                            Email
-                        </th>
-<!--                        <th scope="col" class="text-black-50">
-                            <i class="bi bi-geo-alt-fill"></i>
-                            Direccion
-                        </th>-->
-<!--                        <th scope="col" class="text-black-50">
-                            <i class="bi bi-telephone-fill"></i>
-                            Contacto
-                        </th>-->
-<!--                        <th scope="col-1" class="text-black-50">Roll</th>
-                        <th scope="col-1" class="text-black-50">Status</th>
--->                        <th scope="col" class="text-black-50">Accion</th>
+                        <th>#Id</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Roll</th>
+                        <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="usuario, iterStat: ${usuarios}" >
-                        <th  scope="row"><span th:text="${iterStat.index + 1}"></span></th>
-<!--                        <td class="col-1">
-                            <img th:src="${usuario.Imagen == null} ? 'https://mdbootstrap.com/img/Photos/Others/placeholder-avatar.jpg' : 'data:image/jpeg;base64,' + ${usuario.Imagen}"
-                                 alt="Foto de perfil" class="rounded-circle" id="imagen" width="42">
-                        </td>-->
-                        <td class="col" th:text="|${usuario.nombre} ${usuario.apellidoPaterno}|"></td>
-                        <td class="col" th:text="|${usuario.nombre} ${usuario.email}|"></td>
-<!--                        <td class="col-4">
-                            <ul th:each="direccion, iterStat: ${usuario.Direccion}">
-                                <li th:text="|Calle: ${direccion.Calle}, Numero Interior: ${direccion.NumeroInterior}, Numero Exterior: ${direccion.NumeroExterior}, Numero Exterior: ${direccion.NumeroExterior}|"></li>
-                            </ul>
-
-                        </td>-->
-<!--                        <td>
-                            <ul>
-                                <li>Celular: <span th:text="${usuario.Celular}"></span></li>
-                                <li>Telefono: <span th:text="${usuario.Telefono}"></span></li>
-                                <li>Email: <span th:text="${usuario.Email}"></span></li>
-                            </ul>
-                        </td>-->
-<!--                        <td class="">
-                            <div class="badge text-bg-secondary"><span th:text="${usuario.Roll.NombreRoll}"></span></div>
-                        </td>
-                        <td class="col-1">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input status-switch" 
-                                       type="checkbox" 
-                                       role="switch" 
-                                       id="switchCheckChecked" 
-                                       th:attr="data-id=${usuario.IdUsuario}"
-                                       th:checked="${usuario.Status == 1}">
+                    <tr th:each="usuario, iterStat: ${usuarios}">
+                        <td><span th:text="${iterStat.index + 1}"></span></td>
+                        <td th:text="|${usuario.nombre} ${usuario.apellidoPaterno}|"></td>
+                        <td th:text="${usuario.email}"></td>
+                        <td>
+                            <div class="badge badge-region">
+                                <span th:text="${usuario.roll.Nombre}"></span>
                             </div>
                         </td>
-                        <td class="col-1">
-                            <span th:text="${usuario.IsVerified == 1 ? 'Verificado' : 'No Verificado'}"
-                                th:classappend="${usuario.IsVerified == 1 ? ' badge text-bg-info' : ' badge text-bg-warning'}">
-                            </span>
-                        </td>-->
-                        <td class=" col-3">
-                            <!--th:href="@{/usuario/detail/{id}(id=${usuario.IdUsuario})}"-->
-                            <a type="button" class="btn btn-primary btn-sm"> 
-                                <i class="bi bi-pencil-square"></i>
-
-                            </a>
-                            <!--th:onclick="|confirmarEliminacionUsuario(${usuario.IdUsuario})|"-->
-                            <button type="button" class="btn btn-danger btn-sm" 
+                        <td>
+                            <button type="button" class="btn-social" 
+                                    th:onclick="|AgregarEditarUsuario(${usuario.id})|"
+                                    id="btnEditarPerfilUsuario"> 
+                                Editar
+                            </button>
+                            <button type="button" class="btn-eliminar" 
                                     th:onclick="|confirmarEliminacionUsuario(${usuario.id})|"> 
-                                <i class="bi bi-trash3-fill"></i>
+                                Eliminar
                             </button>
                         </td>
-                    </tr> 
+                    </tr>
                 </tbody>
             </table>
+        </div>
+        <!-- Modal oculto de editar agregar usuario -->
+        <div id="modal-editarUsuario" class="modal">
+            <div class="modal-content w-25">
+                <span class="closeUsuario" id="closeUsuario">&times;</span>
+                <h2>Editar Usuario</h2>
+                <form  th:action="@{/administrador/agregarEditar}" th:object="${user}" method="post">
+                    <input type="hidden" name="idUsuario" th:value="${id}" th:field="*{id}" id="idUsuario">
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input
+                            type="text"
+                            id="nombre"
+                            name="nombre"
+                            th:field="*{nombre}"
+                            placeholder="Ash"
+                            required
+                            />
+                    </div>
+
+                    <!-- Apellido Paterno -->
+                    <div class="form-group">
+                        <label for="apellidoPaterno">Apellido Paterno</label>
+                        <input
+                            type="text"
+                            id="apellidoPaterno"
+                            name="apellidoPaterno"
+                            th:field="*{apellidoPaterno}"
+                            placeholder="Ketchum"
+                            required
+                            />
+                    </div>
+
+                    <!-- Apellido Materno -->
+                    <div class="form-group">
+                        <label for="apellidoMaterno">Apellido Materno</label>
+                        <input
+                            type="text"
+                            id="apellidoMaterno"
+                            name="apellidoMaterno"
+                            th:field="*{apellidoMaterno}"
+                            placeholder="Lopez"
+                            required
+                            />
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            th:field="*{email}"
+                            placeholder="Ash@gmail.com"
+                            required
+                            />
+                    </div> 
+                    <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            th:field="*{password}"
+                            placeholder="••••••••"
+                            required
+                            />
+                    </div>
+                    <!--ROL-->
+                    <div class="form-group">
+                        <label for="idRol">Tipo de Usuario</label>
+                        <select id="idRol" name="idRol" required th:field="*{roll.IdRoll}">
+                            <option type="number" value="2">Entrenador (Usuario)</option>
+                            <option type="number" value="1">Maestro Pokémon (Admin)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-submit">Guardar</button>
+                </form>
+            </div>
         </div>
         <!-- Modal oculto -->
         <div id="modal-editar" class="modal">
@@ -211,19 +246,6 @@
                             required
                             />
                     </div>
-
-                    <!--                 Password 
-                    <div class="form-group">
-                    <label for="password">Contraseña</label>
-                    <input
-                                            type="password"
-                                            id="password"
-                                            name="password"
-                                            placeholder="••••••••"
-                                            required
-                                            />
-                    </div>-->
-
                     <button type="submit" class="btn-submit">Guardar</button>
                 </form>
             </div>

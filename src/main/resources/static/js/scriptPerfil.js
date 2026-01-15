@@ -38,12 +38,19 @@ const modalEditar = document.getElementById("modal-editar");
 const btnEditar = document.getElementById("btnEditarPerfil");
 const btnCerrar = document.querySelector(".close");
 
+// Modal editar usuario
+const modalEditarUsuario = document.getElementById("modal-editarUsuario");
+const btnEditarUsuario = document.getElementById("btnEditarPerfilUsuario");
+const btnAgregarUsuario = document.getElementById("btnAgregarPerfilUsuario");
+const btnCerrarUsuario = document.getElementById("closeUsuario");
 
 // ======================
 // Init
 // ======================
 document.addEventListener("DOMContentLoaded", async () => {
+    var id = 0;
     initModalPerfil();
+    AgregarEditarUsuario(id);
 
     try {
         favoritosIds = await cargarFavoritos();
@@ -202,4 +209,26 @@ function confirmarEliminacionUsuario(id){
     window.location.href = "/administrador/users/delete/" + id;
     }
   });
+}
+
+function AgregarEditarUsuario(id){
+    if (!modalEditarUsuario || !btnEditarUsuario || !btnAgregarUsuario || !btnCerrarUsuario) return;
+
+    btnEditarUsuario.addEventListener("click", () => {
+        modalEditarUsuario.style.display = "block";
+    });
+    
+    btnAgregarUsuario.addEventListener("click", () => {
+        modalEditarUsuario.style.display = "block";
+    });
+
+    btnCerrarUsuario.addEventListener("click", () => {
+        modalEditarUsuario.style.display = "none";
+    });
+
+    window.addEventListener("click", e => {
+        if (e.target === modalEditarUsuario) {
+            modalEditarUsuario.style.display = "none";
+        }
+    });
 }
