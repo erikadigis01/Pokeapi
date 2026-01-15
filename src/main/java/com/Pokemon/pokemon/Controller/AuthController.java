@@ -114,6 +114,9 @@ public class AuthController {
 
             Map body = resp.getBody();
             if (body != null && body.containsKey("token")) {
+
+                redirectAttributes.getFlashAttributes().clear();
+
                 String token = (String) body.get("token");
                 String userEmail = jwtUtil.extraerUsername(token);
 
