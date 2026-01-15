@@ -305,7 +305,7 @@ public class AdminController {
             }
 
         } else { //es editar 
-
+            //falta lo de editar 
         }
         
 //        REDIRECCIONAR AL PERFIL 

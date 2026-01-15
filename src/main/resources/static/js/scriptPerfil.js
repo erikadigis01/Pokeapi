@@ -211,24 +211,38 @@ function confirmarEliminacionUsuario(id){
   });
 }
 
-function AgregarEditarUsuario(id){
-    if (!modalEditarUsuario || !btnEditarUsuario || !btnAgregarUsuario || !btnCerrarUsuario) return;
+// Referencias
+const inputNombre = document.getElementById("nombreUser");
 
-    btnEditarUsuario.addEventListener("click", () => {
+// Función principal
+function AgregarEditarUsuario(id) {
+    // Mostrar modal
+     btnEditarUsuario.addEventListener("click", () => {
         modalEditarUsuario.style.display = "block";
+        // Si hay id, hay que traer los datos con el id
+        if (id !== null && id !== undefined) {
+            inputNombre.value = "Hola Mundo"; 
+            //hacer la peticion asincrona para traer los datos por get by id
+        } else {
+            inputNombre.value = ""; 
+        }
     });
     
     btnAgregarUsuario.addEventListener("click", () => {
         modalEditarUsuario.style.display = "block";
     });
-
+    
+    // Cerrar modal con la X
     btnCerrarUsuario.addEventListener("click", () => {
         modalEditarUsuario.style.display = "none";
     });
 
+    // Cerrar modal al hacer clic fuera
     window.addEventListener("click", e => {
         if (e.target === modalEditarUsuario) {
             modalEditarUsuario.style.display = "none";
         }
     });
+
 }
+
