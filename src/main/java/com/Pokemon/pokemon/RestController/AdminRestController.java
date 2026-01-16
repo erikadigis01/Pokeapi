@@ -92,6 +92,9 @@ public class AdminRestController {
             //actualizar la lista de pokemones
             List<Favoritos> favoritos = user.getFavoritos();
             usuario.setFavoritos(favoritos);
+            usuario.setImagen(user.getImagen());
+            usuario.setIsVerified(user.getIsVerified());
+            usuario.setVerificationToken(user.getVerificationToken());
             //mandar al restcontroller 
             usuarioService.update(user.getId(), usuario);
             Usuario userFind = usuarioService.getById(usuario.getId());
