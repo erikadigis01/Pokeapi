@@ -92,7 +92,7 @@
                         </td>
                         <td>
                             <button type="button" class="btn-social" 
-                                    th:onclick="|AgregarEditarUsuario(${usuario.id})|"
+                                    th:onclick="|abrirModalEditar(${usuario.id})|"
                                     id="btnEditarPerfilUsuario"> 
                                 Editar
                             </button>
@@ -109,7 +109,7 @@
         <div id="modal-editarUsuario" class="modal">
             <div class="modal-content w-25">
                 <span class="closeUsuario" id="closeUsuario">&times;</span>
-                <h2>Editar Usuario</h2>
+                <h2 id="titleForm">Usuario</h2>
                 <form  th:action="@{/administrador/agregarEditar}" th:object="${user}" method="post">
                     <input type="hidden" name="idUser" th:value="${id}" th:field="*{id}" id="idUser">
                     <div class="form-group">
@@ -163,7 +163,7 @@
                             />
                     </div> 
                     <div class="form-group">
-                    <label for="password">Contraseña</label>
+                    <label for="password" id="labelPassword">Contraseña</label>
                     <input
                             type="password"
                             id="passwordUser"

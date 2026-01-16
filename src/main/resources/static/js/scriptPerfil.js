@@ -212,37 +212,73 @@ function confirmarEliminacionUsuario(id){
 }
 
 // Referencias
+const inputIdUser = document.getElementById("idUser");
 const inputNombre = document.getElementById("nombreUser");
+const inputApellidoPaterno = document.getElementById("apellidoPaternoUser");
+const inputApellidoMaterno = document.getElementById("apellidoMaternoUser");
+const inputEmail = document.getElementById("emailUser");
+const selectRoll = document.getElementById("idRolUser");
+const inputPassword = document.getElementById("passwordUser");
+const titleForm = document.getElementById("titleForm");
+const labelPassword = document.getElementById("labelPassword");
 
-// Función principal
-function AgregarEditarUsuario(id) {
-    // Mostrar modal
-     btnEditarUsuario.addEventListener("click", () => {
-        modalEditarUsuario.style.display = "block";
-        // Si hay id, hay que traer los datos con el id
-        if (id !== null && id !== undefined) {
-            inputNombre.value = "Hola Mundo"; 
-            //hacer la peticion asincrona para traer los datos por get by id
-        } else {
-            inputNombre.value = ""; 
-        }
-    });
-    
-    btnAgregarUsuario.addEventListener("click", () => {
-        modalEditarUsuario.style.display = "block";
-    });
-    
-    // Cerrar modal con la X
-    btnCerrarUsuario.addEventListener("click", () => {
-        modalEditarUsuario.style.display = "none";
-    });
+const urlBase = "http://localhost:8080/pokemon/";
 
-    // Cerrar modal al hacer clic fuera
-    window.addEventListener("click", e => {
-        if (e.target === modalEditarUsuario) {
-            modalEditarUsuario.style.display = "none";
-        }
-    });
-
+// 1. Función para limpiar el formulario (id = 0 o Agregar)
+function limpiarFormulario() {
+    inputNombre.value = "";
+    inputApellidoPaterno.value = "";
+    inputApellidoMaterno.value = "";
+    inputEmail.value = "";
+    inputIdUser.value = "";
+    selectRoll.value = 1;
 }
 
+// 2. Función para cargar datos (Editar)
+function cargarDatosUsuario(id) {
+    $.ajax({
+        url: urlBase + "detailId/" + id,
+        type: "GET",
+        headers: { "Authorization": "Bearer " + token },
+        success: function(data) {
+            inputNombre.value = data.object.nombre;
+            inputApellidoPaterno.value = data.object.apellidoPaterno;
+            inputApellidoMaterno.value = data.object.apellidoMaterno;
+            inputEmail.value = data.object.email;
+            inputIdUser.value = data.object.id;
+            selectRoll.value = data.object.roll.IdRoll;
+            // Para el ROL (si es un select)
+            if(data.object.roll) {
+                document.getElementById("idRolUser").value = data.object.roll.IdRoll;
+            }
+        }
+    });
+}
+// Cerrar modal con la X
+   btnCerrarUsuario.addEventListener("click", () => {
+       modalEditarUsuario.style.display = "none";
+   });
+
+   // Cerrar modal al hacer clic fuera
+   window.addEventListener("click", e => {
+       if (e.target === modalEditarUsuario) {
+           modalEditarUsuario.style.display = "none";
+       }
+   });
+
+    btnAgregarUsuario.addEventListener("click", () => {
+        limpiarFormulario();
+        modalEditarUsuario.style.display = "block";
+        //no mostrar el campo password
+        inputPassword.style.display = "block";
+        labelPassword.style.display = "block";
+    });
+
+    function abrirModalEditar(id) {
+        limpiarFormulario();
+        cargarDatosUsuario(id);
+        modalEditarUsuario.style.display = "block";
+        //no mostrar el campo password
+        inputPassword.style.display = "none";
+        labelPassword.style.display = "none";
+    }

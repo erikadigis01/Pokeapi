@@ -42,7 +42,33 @@ public class PokemonRestController {
     public PokemonDTO getPokemonByName(@PathVariable String name) {
         return pokemonService.getPokemonByName(name);
     }
+    
+    @GetMapping("/detailId/{id}")
+    public ResponseEntity userDetailById(@PathVariable Long id) {
+        Result result = new Result();
 
+        try {
+           
+            Usuario usuario = usuarioService.getById(id);
+
+            result.object = usuario;
+            result.correct = true;
+            result.errorMessage = "Se encontro un usuario con ese id";
+            result.status = 200;
+
+        } catch (Exception ex) {
+
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+            result.status = 500;
+
+        }
+
+        return ResponseEntity.status(result.status).body(result);
+
+    }
+    
     @GetMapping("/detail/{email}")
     public ResponseEntity userDetail(@PathVariable String email) {
         Result result = new Result();

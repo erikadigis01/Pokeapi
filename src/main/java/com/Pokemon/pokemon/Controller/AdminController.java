@@ -3,6 +3,7 @@ package com.Pokemon.pokemon.Controller;
 
 import com.Pokemon.pokemon.DTO.PokemonAdminCardDTO;
 import com.Pokemon.pokemon.JPA.Result;
+import com.Pokemon.pokemon.JPA.Roll;
 import com.Pokemon.pokemon.JPA.Usuario;
 import com.Pokemon.pokemon.Service.JwtService;
 import com.Pokemon.pokemon.Service.PokemonService;
@@ -107,7 +108,10 @@ public class AdminController {
             model.addAttribute("usuarios", resultUsuario.objects);
             Usuario usuario = (Usuario) response.getBody().object;
             model.addAttribute("usuario", usuario);
-            model.addAttribute("user", new Usuario());
+            Usuario nuevoUser = new Usuario();
+            nuevoUser.roll = new Roll();
+            model.addAttribute("user", nuevoUser);
+            model.addAttribute("token", token);
             redirectAttributes.addFlashAttribute("perfilMessage", 
                     "Tu perfil se actualizo correctamente.");
             
@@ -278,6 +282,7 @@ public class AdminController {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token);
         HttpEntity<Usuario> requestEntity = new HttpEntity<>(user, headers);
 
         
@@ -300,16 +305,32 @@ public class AdminController {
                 } 
 
             } catch (Exception ex) {
-                    redirectAttributes.addFlashAttribute("error", "No se pudo crear el usuario: " + ex.getMessage());
-                  
+                    redirectAttributes.addFlashAttribute("error", "No se pudo crear el usuario: " + ex.getMessage());    
             }
 
-        } else { //es editar 
-            //falta lo de editar 
+        } else { 
+                
+             try {
+                
+
+                ResponseEntity<Result<Usuario>> responseEntityUsuario =
+                    restTemplate.exchange(
+                        url + "detail",
+                        HttpMethod.POST,
+                        requestEntity,
+                        new ParameterizedTypeReference<Result<Usuario>>() {}
+                    );
+
+                if (responseEntityUsuario.getStatusCode().value() == 200) {
+                    redirectAttributes.addFlashAttribute("mensaje", 
+                    "Usuario editado exitosamente.");
+                } 
+
+            } catch (Exception ex) {
+                    redirectAttributes.addFlashAttribute("error", "No se pudo actualizar el usuario: " + ex.getMessage());    
+            }
+            
         }
-        
-//        REDIRECCIONAR AL PERFIL 
-        //buscar el email 
         String email = jwtService.extraerUsername(token);
         //buscar el id usuario 
         Long idAdmin = usuarioService.getUserIdByEmail(email);
