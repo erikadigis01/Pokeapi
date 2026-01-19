@@ -87,6 +87,7 @@ public class AuthRestController {
             result.errorMessage = ex.getLocalizedMessage();
             result.ex = ex;
             result.status = 500;
+             ex.printStackTrace(); 
          
          }
              

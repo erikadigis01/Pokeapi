@@ -27,7 +27,7 @@
                 <div class="form-container">
                     <div class="form-border-top"></div>
 
-                    <form id="registroForm" th:action="@{/login/registrar}" method="post">
+                    <form id="registroForm" th:action="@{/login/registrar}" th:object="${usuario}" method="post">
                         <!-- Nombre -->
                         <div class="form-group">
                             <label for="nombre">Nombre</label>
@@ -36,8 +36,13 @@
                                 id="nombre" 
                                 name="nombre" 
                                 placeholder="Ash" 
+                                th:field="*{nombre}"
                                 required
                                 />
+                             <span th:if="${#fields.hasErrors('nombre')}" 
+                                   th:errors="*{nombre}" 
+                                 class="text-danger">
+                             </span>
                         </div>
 
                         <!-- Apellido Paterno -->
@@ -48,8 +53,13 @@
                                 id="apellidoPaterno" 
                                 name="apellidoPaterno" 
                                 placeholder="Ketchum" 
+                                th:field="*{apellidoPaterno}"
                                 required
                                 />
+                            <span th:if="${#fields.hasErrors('apellidoPaterno')}" 
+                                   th:errors="*{apellidoPaterno}" 
+                                 class="text-danger">
+                             </span>
                         </div>
 
                         <!-- Apellido Materno -->
@@ -60,8 +70,13 @@
                                 id="apellidoMaterno" 
                                 name="apellidoMaterno" 
                                 placeholder="López" 
+                                th:field="*{apellidoMaterno}"
                                 required
                                 />
+                             <span th:if="${#fields.hasErrors('apellidoMaterno')}" 
+                                   th:errors="*{apellidoMaterno}" 
+                                 class="text-danger">
+                             </span>
                         </div>
 
                         <!-- Email -->
@@ -72,8 +87,13 @@
                                 id="email" 
                                 name="email" 
                                 placeholder="entrenador@pokemon.com" 
+                                th:field="*{email}"
                                 required
                                 />
+                             <span th:if="${#fields.hasErrors('email')}" 
+                                   th:errors="*{email}" 
+                                 class="text-danger">
+                             </span>
                         </div>
 
                         <!-- Password -->
@@ -83,20 +103,15 @@
                                 type="password" 
                                 id="password" 
                                 name="password" 
+                                th:field="*{password}"
                                 placeholder="••••••••" 
                                 required
                                 />
+                             <span th:if="${#fields.hasErrors('password')}" 
+                                   th:errors="*{password}" 
+                                 class="text-danger">
+                             </span>
                         </div>
-
-                        <!-- ID Rol -->
-                        <div class="form-group">
-                            <label for="idRol">Tipo de Usuario</label>
-                            <select id="idRol" name="idRol" required>
-                                <option value="user">Entrenador (Usuario)</option>
-                                <option value="admin">Maestro Pokémon (Admin)</option>
-                            </select>
-                        </div>
-
                         <!-- Botón Submit -->
                         <button type="submit" class="btn-submit">
                             ¡REGISTRAR!
