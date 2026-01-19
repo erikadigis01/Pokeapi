@@ -60,15 +60,15 @@ public class PokemonController {
 
     @GetMapping("detail/{email}")
     public String detalleUsuario(@PathVariable("email") String email,
-                             HttpServletRequest request,
-                             Model model,
-                             RedirectAttributes redirectAttributes) {
+                                 HttpServletRequest request,
+                                 Model model,
+                                 RedirectAttributes redirectAttributes) {
 
-    String token = getTokenFromCookie(request);
-    if (token == null) {
-        redirectAttributes.addAttribute("status", "Su sesión ha caducado");
-        return "redirect:/login";
-    }
+        String token = getTokenFromCookie(request);
+        if (token == null) {
+            redirectAttributes.addAttribute("status", "Su sesión ha caducado");
+            return "redirect:/login";
+        }
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
@@ -81,13 +81,19 @@ public class PokemonController {
                                   entity,
                                   new ParameterizedTypeReference<Result<Usuario>>() {});
 
-        if (response.getStatusCode().is2xxSuccessful()) {
-            Usuario usuario = (Usuario) response.getBody().object;
-            model.addAttribute("usuario", usuario);
+        Usuario usuario = null;
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            usuario = (Usuario) response.getBody().object;
         }
 
+        if (usuario == null) {
+            usuario = new Usuario(); // objeto vacío para evitar null
+        }
+
+        model.addAttribute("usuario", usuario);
         return "Perfil";
     }
+
     
     @PostMapping("detail")
     public String actualizarDatos(@ModelAttribute("usuario") Usuario usuario,

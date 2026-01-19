@@ -50,7 +50,6 @@ const btnCerrarUsuario = document.getElementById("closeUsuario");
 document.addEventListener("DOMContentLoaded", async () => {
     var id = 0;
     initModalPerfil();
-    AgregarEditarUsuario(id);
 
     try {
         favoritosIds = await cargarFavoritos();
@@ -255,30 +254,37 @@ function cargarDatosUsuario(id) {
     });
 }
 // Cerrar modal con la X
-   btnCerrarUsuario.addEventListener("click", () => {
-       modalEditarUsuario.style.display = "none";
-   });
+if (btnCerrarUsuario) {
+    btnCerrarUsuario.addEventListener("click", () => {
+        modalEditarUsuario.style.display = "none";
+    });
+}
 
-   // Cerrar modal al hacer clic fuera
-   window.addEventListener("click", e => {
-       if (e.target === modalEditarUsuario) {
-           modalEditarUsuario.style.display = "none";
-       }
-   });
+// Cerrar modal al hacer clic fuera
+if (modalEditarUsuario) {
+    window.addEventListener("click", e => {
+        if (e.target === modalEditarUsuario) {
+            modalEditarUsuario.style.display = "none";
+        }
+    });
+}
 
+// Botón Agregar Usuario
+if (btnAgregarUsuario) {
     btnAgregarUsuario.addEventListener("click", () => {
         limpiarFormulario();
         modalEditarUsuario.style.display = "block";
-        //no mostrar el campo password
         inputPassword.style.display = "block";
         labelPassword.style.display = "block";
     });
+}
 
-    function abrirModalEditar(id) {
-        limpiarFormulario();
-        cargarDatosUsuario(id);
-        modalEditarUsuario.style.display = "block";
-        //no mostrar el campo password
-        inputPassword.style.display = "none";
-        labelPassword.style.display = "none";
-    }
+// Abrir modal editar usuario
+function abrirModalEditar(id) {
+    if (!modalEditarUsuario) return; // seguridad
+    limpiarFormulario();
+    cargarDatosUsuario(id);
+    modalEditarUsuario.style.display = "block";
+    inputPassword.style.display = "none";
+    labelPassword.style.display = "none";
+}

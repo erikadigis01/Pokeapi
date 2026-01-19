@@ -14,23 +14,23 @@ public class Roll {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idroll")
-    private int IdRoll;
+    private Long IdRoll;
     
     @Column(name = "nombre")
     private String Nombre;
     
     public Roll(){}
     
-    public Roll(int IdRoll, String Nombre){
+    public Roll(Long IdRoll, String Nombre){
         
         this.IdRoll = IdRoll;
         this.Nombre = Nombre;
     }
     
-    public void setIdRoll(int IdRoll){
+    public void setIdRoll(Long IdRoll){
         this.IdRoll = IdRoll;
     }
-    public int getIdRoll(){
+    public Long getIdRoll(){
         return IdRoll;
     }
     
