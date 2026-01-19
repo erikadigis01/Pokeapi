@@ -89,10 +89,8 @@ public class AuthRestController {
             result.status = 500;
          
          }
-         
-    
+             
          return ResponseEntity.status(result.status).body(result);
-      
     
     }
     

@@ -1,5 +1,6 @@
 package com.Pokemon.pokemon.Controller;
 
+import com.Pokemon.pokemon.Configuration.RollConfiguration;
 import com.Pokemon.pokemon.DTO.LoginRequest;
 import com.Pokemon.pokemon.JPA.Result;
 import com.Pokemon.pokemon.JPA.Roll;
@@ -7,7 +8,7 @@ import com.Pokemon.pokemon.JPA.Usuario;
 import com.Pokemon.pokemon.Service.JwtService;
 import com.Pokemon.pokemon.Service.UsuarioService;
 import java.util.Map;
-import jakarta.servlet.http.Cookie; 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,11 +52,11 @@ public class AuthController {
 
     @PostMapping("/login/registrar")
     public String registrarCuenta(@RequestParam String nombre,
-                                  @RequestParam String apellidoPaterno,
-                                  @RequestParam String apellidoMaterno,
-                                  @RequestParam String email,
-                                  @RequestParam String password,
-                                  RedirectAttributes redirectAttributes) {
+            @RequestParam String apellidoPaterno,
+            @RequestParam String apellidoMaterno,
+            @RequestParam String email,
+            @RequestParam String password,
+            RedirectAttributes redirectAttributes) {
 
         Usuario usuario = new Usuario();
         usuario.setNombre(nombre);
@@ -64,20 +65,21 @@ public class AuthController {
         usuario.setEmail(email);
         usuario.setPassword(password);
         usuario.setRoll(new Roll());
-        usuario.getRoll().setIdRoll(2);
+        usuario.getRoll().setIdRoll(RollConfiguration.RollUserId);
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Usuario> requestEntity = new HttpEntity<>(usuario, headers);
 
         try {
-            ResponseEntity<Result<Usuario>> responseEntityUsuario =
-                restTemplate.exchange(
-                    url + "/addUsuario",
-                    HttpMethod.POST,
-                    requestEntity,
-                    new ParameterizedTypeReference<Result<Usuario>>() {}
-                );
+            ResponseEntity<Result<Usuario>> responseEntityUsuario
+                    = restTemplate.exchange(
+                            url + "/addUsuario",
+                            HttpMethod.POST,
+                            requestEntity,
+                            new ParameterizedTypeReference<Result<Usuario>>() {
+                    }
+                    );
 
             if (responseEntityUsuario.getStatusCode().value() == 201) {
                 redirectAttributes.addFlashAttribute("mensaje", "Usuario creado exitosamente. Ahora puedes iniciar sesión.");
@@ -95,9 +97,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public String iniciarSesion(@RequestParam String email,
-                                @RequestParam String password,
-                                RedirectAttributes redirectAttributes,
-                                HttpServletResponse response) {
+            @RequestParam String password,
+            RedirectAttributes redirectAttributes,
+            HttpServletResponse response) {
 
         RestTemplate restTemplate = new RestTemplate();
         LoginRequest loginReq = new LoginRequest(email, password);
@@ -108,14 +110,17 @@ public class AuthController {
 
         try {
             ResponseEntity<Map> resp = restTemplate.exchange(
-                url + "/login",
-                HttpMethod.POST,
-                request,
-                Map.class
+                    url + "/login",
+                    HttpMethod.POST,
+                    request,
+                    Map.class
             );
 
             Map body = resp.getBody();
             if (body != null && body.containsKey("token")) {
+
+                redirectAttributes.getFlashAttributes().clear();
+
                 String token = (String) body.get("token");
                 String userEmail = jwtUtil.extraerUsername(token);
 
@@ -130,11 +135,20 @@ public class AuthController {
                 Long iduser = usuarioService.getUserIdByEmail(userEmail);
                 Usuario usuario = usuarioService.getById(iduser);
 
-                // Redirigir según rol
-                if (usuario.getRoll().getIdRoll() == 1) { // ADMIN
-                    return "redirect:/administrador/pokemons";
+                // Validar si la cuenta esta verificada
+                if (usuario.getIsVerified() == null || usuario.getIsVerified() == 0) {
+                    redirectAttributes.addFlashAttribute("error", "Cuenta no Verificada");
+                    redirectAttributes.addFlashAttribute("accountStatus", "UNVERIFIED");
+                    redirectAttributes.addFlashAttribute("email", email);
+                    return "redirect:login";
+
                 } else {
-                    return "redirect:/pokedex";
+                    // Redirigir según rol
+                    if (usuario.getRoll().getIdRoll() == 1) { // ADMIN
+                        return "redirect:/administrador/pokemons";
+                    } else {
+                        return "redirect:/pokedex";
+                    }
                 }
 
             } else {
@@ -147,7 +161,6 @@ public class AuthController {
             return "redirect:/login";
         }
     }
-
 
     @GetMapping("/logout")
     public String logout(HttpServletResponse response) {

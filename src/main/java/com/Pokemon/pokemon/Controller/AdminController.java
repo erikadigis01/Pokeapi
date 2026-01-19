@@ -42,8 +42,7 @@ public class AdminController {
     
     private final PokemonService pokemonService;
     
-    private final String url = "http://localhost:8080/admin/";
-    private final String url2 = "http://localhost:8080/auth/";
+    private final String url = "http://localhost:8080/";
     
     public AdminController(PokemonService pokemonService) {
         this.pokemonService = pokemonService;
@@ -87,7 +86,7 @@ public class AdminController {
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Result<Usuario>> response =
-            restTemplate.exchange(url + "detail/" + email,
+            restTemplate.exchange(url + "admin/detail/" + email,
                                   HttpMethod.GET,
                                   entity,
                                   new ParameterizedTypeReference<Result<Usuario>>() {});
@@ -98,11 +97,17 @@ public class AdminController {
 
         RestTemplate restTemplateUsers = new RestTemplate();
         ResponseEntity<Result<Usuario>> responseUsers =
-            restTemplate.exchange(url + "users",
+            restTemplate.exchange(url + "admin/users",
                                   HttpMethod.GET,
                                   entity,
                                   new ParameterizedTypeReference<Result<Usuario>>() {});
+        ResponseEntity<Result<Roll>> responseRolles =
+            restTemplate.exchange(url + "roll",
+                                  HttpMethod.GET,
+                                  entity,
+                                  new ParameterizedTypeReference<Result<Roll>>() {});
 
+        
         if (response.getStatusCode().is2xxSuccessful()) {
             Result resultUsuario = responseUsers.getBody();
             model.addAttribute("usuarios", resultUsuario.objects);
@@ -112,6 +117,8 @@ public class AdminController {
             nuevoUser.roll = new Roll();
             model.addAttribute("user", nuevoUser);
             model.addAttribute("token", token);
+            Result resultRoll = responseRolles.getBody();
+            model.addAttribute("rolles", resultRoll.objects);
             redirectAttributes.addFlashAttribute("perfilMessage", 
                     "Tu perfil se actualizo correctamente.");
             
@@ -148,7 +155,7 @@ public class AdminController {
 
         ResponseEntity<Result<Usuario>> responseEntityUsuario =
             restTemplate.exchange(
-                url + "detail",
+                url + "admin/detail",
                 HttpMethod.POST,
                 requestEntity,
                 new ParameterizedTypeReference<Result<Usuario>>() {}
@@ -194,7 +201,7 @@ public class AdminController {
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Result<Usuario>> response =
-            restTemplate.exchange(url + "users",
+            restTemplate.exchange(url + "admin/users",
                                   HttpMethod.GET,
                                   entity,
                                   new ParameterizedTypeReference<Result<Usuario>>() {});
@@ -235,7 +242,7 @@ public class AdminController {
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Result<Usuario>> responseDelete =
-            restTemplate.exchange(url + "users/" + id,
+            restTemplate.exchange(url + "admin/users/" + id,
                                   HttpMethod.DELETE,
                                   entity,
                                   new ParameterizedTypeReference<Result<Usuario>>() {});
@@ -293,7 +300,7 @@ public class AdminController {
                 
                 ResponseEntity<Result<Usuario>> responseEntityUsuario =
                     restTemplate.exchange(
-                        url2 + "/addUsuario",
+                        url + "auth/addUsuario",
                         HttpMethod.POST,
                         requestEntity,
                         new ParameterizedTypeReference<Result<Usuario>>() {}
@@ -315,7 +322,7 @@ public class AdminController {
 
                 ResponseEntity<Result<Usuario>> responseEntityUsuario =
                     restTemplate.exchange(
-                        url + "detail",
+                        url + "admin/detail",
                         HttpMethod.POST,
                         requestEntity,
                         new ParameterizedTypeReference<Result<Usuario>>() {}

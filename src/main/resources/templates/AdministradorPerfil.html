@@ -170,16 +170,18 @@
                             name="passwordUser"
                             th:field="*{password}"
                             placeholder="••••••••"
-                            required
                             />
                     </div>
                     <!--ROL-->
                     <div class="form-group">
                         <label for="idRol">Tipo de Usuario</label>
-                        <select id="idRolUser" name="idRolUser" required th:field="*{roll.IdRoll}">
-                            <option type="number" value="2">Entrenador (Usuario)</option>
-                            <option type="number" value="1">Maestro Pokémon (Admin)</option>
+                        <select id="idRolUser" name="idRolUser" th:field="*{roll.IdRoll}">
+                            <option th:each="rol : ${rolles}"
+                                    th:value="${rol.IdRoll}"
+                                    th:text="${rol.Nombre}">
+                            </option>
                         </select>
+
                     </div>
                     <button type="submit" class="btn-submit">Guardar</button>
                 </form>
