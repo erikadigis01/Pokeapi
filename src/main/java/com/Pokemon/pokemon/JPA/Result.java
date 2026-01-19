@@ -10,6 +10,7 @@ public class Result <T>{
     public String errorMessage;
     public T object;
     public List<T> objects;
+    @JsonIgnore
     public Exception ex;
     
     @JsonIgnore

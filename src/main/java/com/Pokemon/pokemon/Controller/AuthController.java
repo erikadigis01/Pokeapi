@@ -1,5 +1,6 @@
 package com.Pokemon.pokemon.Controller;
 
+import com.Pokemon.pokemon.Configuration.RollConfiguration;
 import com.Pokemon.pokemon.DTO.LoginRequest;
 import com.Pokemon.pokemon.JPA.Result;
 import com.Pokemon.pokemon.JPA.Roll;
@@ -62,7 +63,7 @@ public class AuthController {
         usuario.setEmail(email);
         usuario.setPassword(password);
         usuario.setRoll(new Roll());
-        usuario.getRoll().setIdRoll(2);
+        usuario.getRoll().setIdRoll(RollConfiguration.RollUserId);
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
