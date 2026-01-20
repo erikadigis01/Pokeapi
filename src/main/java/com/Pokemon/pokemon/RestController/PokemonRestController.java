@@ -42,13 +42,13 @@ public class PokemonRestController {
     public PokemonDTO getPokemonByName(@PathVariable String name) {
         return pokemonService.getPokemonByName(name);
     }
-    
+
     @GetMapping("/detailId/{id}")
     public ResponseEntity userDetailById(@PathVariable Long id) {
         Result result = new Result();
 
         try {
-           
+
             Usuario usuario = usuarioService.getById(id);
 
             result.object = usuario;
@@ -68,7 +68,7 @@ public class PokemonRestController {
         return ResponseEntity.status(result.status).body(result);
 
     }
-    
+
     @GetMapping("/detail/{email}")
     public ResponseEntity userDetail(@PathVariable String email) {
         Result result = new Result();
@@ -131,5 +131,39 @@ public class PokemonRestController {
 
         return ResponseEntity.status(result.status).body(result);
 
+    }
+
+    @PatchMapping("usuario/imagen/update/{idUsuario}")
+    public ResponseEntity UpdateImagen(@RequestParam("imagen") String imagenBase64,
+            @PathVariable("idUsuario") Long id) {
+
+        Result result = new Result();
+
+        if (imagenBase64 == null) {
+
+            result.correct = false;
+            result.status = 400;
+
+        } else {
+
+            try {
+                if (imagenBase64.startsWith("data:image")) {
+                    imagenBase64 = imagenBase64.substring(imagenBase64.indexOf(",") + 1);
+                }
+
+                result = usuarioService.UpdateImagen(id, imagenBase64);
+
+            } catch (Exception ex) {
+
+                result.correct = false;
+                result.errorMessage = ex.getLocalizedMessage();
+                result.ex = ex;
+                result.status = 500;
+
+            }
+
+        }
+
+        return ResponseEntity.status(result.status).body(result);
     }
 }
