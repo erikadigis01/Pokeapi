@@ -2,9 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="https://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{Layout}">
-    
+
     <section layout:fragment="content">
-        
+
         <!--BREADCRUMBS-->
         <nav class="breadcrumb">
             <a href="/">Inicio</a> /
@@ -15,7 +15,26 @@
         <div class="perfil-container">
             <!-- Datos del Maestro Pokémon -->
             <section class="perfil-info">
-                <img src="https://static.wikia.nocookie.net/universecw/images/0/0f/Ash_Ketchum.png/revision/latest?cb=20201216120309&path-prefix=es" alt="Maestro Pokémon" class="perfil-img">
+                <div class="position-relative d-inline-block">
+
+                    <img id="previewImg"
+                         th:if="${usuario.Imagen == null}"
+                         src="https://cdn-icons-png.flaticon.com/512/219/219983.png"
+                         alt="Maestro Pokémon" class="perfil-img">
+
+                    <img id="previewImg"
+                         th:if="${usuario.Imagen != null}"
+                         th:src="'data:image/png;base64,' + ${usuario.Imagen}"
+                         alt="Maestro Pokémon" class="perfil-img">
+
+                    <!-- Icono editar imagen -->
+                    <button class="edit-iconfoto" onclick="abrirModalEditarImagen()">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+
+
+                </div>
+                <!--<img src="https://static.wikia.nocookie.net/universecw/images/0/0f/Ash_Ketchum.png/revision/latest?cb=20201216120309&path-prefix=es" alt="Maestro Pokémon" class="perfil-img">-->
                 <div class="perfil-datos">
                     <h2 class="perfil-nombre"><span th:text="${usuario.nombre}"></span></h2>
                     <div class="badges">
@@ -146,5 +165,72 @@
                 </form>
             </div>
         </div>
+
+        <!-- Modal oculto - Editar Imagen -->
+        <div id="editarImagenModal" class="modal">
+            <div class="modal-content-foto">
+
+                <!-- Cerrar -->
+                <span class="close" onclick="detenerCamara(); cerrarModalEditarImagen()">&times;</span>
+                <div>
+                    <h2>Actualizar Imagen</h2>
+                </div>
+
+                <div class="modal-body-img">
+
+                    <!-- Preview -->
+                    <img id="previewModal"
+                         src=""
+                         class="preview-img"
+                         style="display:none;">
+
+                    <!-- Cámara -->
+                    <div id="cameraContainer" class="camera-container" style="display:none;">
+                        <video id="video" autoplay></video>
+
+                        <canvas id="canvas"
+                                width="200"
+                                height="200"
+                                style="display:none;"></canvas>
+
+                        <div class="camera-actions">
+                            <button type="button" class="btn-danger" onclick="capturarFoto()">
+                                Capturar
+                            </button>
+                            <button type="button" class="btn-secondary" onclick="detenerCamara()">
+                                Cerrar cámara
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Input oculto -->
+                    <input type="file" id="fileInput" accept="image/*" hidden>
+
+                    <!-- Acciones -->
+                    <div class="actions">
+                        <button type="button"
+                                class="btn-primary"
+                                onclick="document.getElementById('fileInput').click()">
+                            Cargar desde archivo
+                        </button>
+
+                        <button type="button"
+                                class="btn-success"
+                                onclick="activarCamara()">
+                            Tomar foto
+                        </button>
+                    </div>
+
+                    <!-- Guardar -->
+                    <button type="button"
+                            class="btn-submit"
+                            onclick="guardarImagen()">
+                        Guardar imagen
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
     </section>
 </html>

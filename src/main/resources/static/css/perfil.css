@@ -418,6 +418,31 @@ body {
     font-family: "Poppins", sans-serif;
 }
 
+.modal-foto {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, .75);
+    backdrop-filter: blur(4px);
+    display: none;
+    z-index: 1000;
+}
+.modal-content-foto {
+    width: 420px;
+    max-width: 90%;
+    background: #fefefe;
+    margin: auto;
+    padding: 2.2rem;
+    border-radius: 14px;
+    border: 3px solid #1f2937;
+    box-shadow:
+        0 10px 40px rgba(0,0,0,.5),
+        0 0 0 4px #ef4444;
+    animation: modalPop .35s ease;
+    position: relative;
+    font-family: 'Press Start 2P';
+    font-size: .9rem;
+}
+
 /* Animación */
 @keyframes modalPop {
     from {
@@ -495,6 +520,10 @@ body {
 .modal-content select:focus {
     border-color: #ef4444;
     box-shadow: 0 0 0 3px rgba(239,68,68,.3);
+}
+
+.modal.show {
+    display: flex;
 }
 
 /* Botón guardar */
@@ -582,7 +611,7 @@ body {
     text-shadow: 2px 2px #3B4CCA;
 }
 
-.pokemon-table th, 
+.pokemon-table th,
 .pokemon-table td {
     border: 3px solid #3B4CCA;
     padding: 12px;
@@ -623,6 +652,19 @@ body {
     font-family: 'Press Start 2P', cursive;
 }
 
+
+.edit-iconfoto {
+    accent-color: black;
+    transform: translate(-115%,-65%);
+    padding: 10px 10px;
+    border-radius: 100px;
+    background-color: #0BB30B;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 11px;
+}
+
 /* Mensajes */
 .success-message {
     display: block;
@@ -648,4 +690,148 @@ body {
     font-weight: 600;
     text-align: center;
     box-shadow: 0 4px 0 #FF1744;
+}
+
+/* ===============================
+   MODAL EDITAR IMAGEN (SCOPEADO)
+=============================== */
+
+#editarImagenModal .preview-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ccc;
+    margin-bottom: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 25px;
+}
+
+/* ===============================
+   CÁMARA
+=============================== */
+
+#editarImagenModal .camera-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#editarImagenModal video,
+#editarImagenModal canvas {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    margin-top: 25px;
+}
+
+/* ===============================
+   ACCIONES CÁMARA
+=============================== */
+
+#editarImagenModal .camera-actions {
+    display: table;
+    gap: 12px;
+    margin-top: 25px;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ===============================
+   ACCIONES ARCHIVO
+=============================== */
+
+#editarImagenModal .actions {
+    display: flex;
+    gap: 5px;
+    margin-top: 25px;
+    justify-content: center;
+    align-items: unset;
+}
+
+/* ===============================
+   BOTONES
+=============================== */
+
+#editarImagenModal button {
+
+    font-family: 'Press Start 2P';
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 10px;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+#editarImagenModal button:hover {
+    opacity: 0.9;
+}
+
+/* ===============================
+   COLORES DE BOTONES
+=============================== */
+
+#editarImagenModal .btn-primary {
+    background-color: #0d6efd;
+    color: #fff;
+}
+
+#editarImagenModal .btn-success {
+    background-color: #198754;
+    color: #fff;
+}
+
+#editarImagenModal .btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#editarImagenModal .btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ===============================
+   BOTÓN GUARDAR
+=============================== */
+
+#editarImagenModal .btn-submit {
+    margin-top: 20px;
+    width: 100%;
+    background-color: #198754;
+    color: white;
+    font-family: 'Press Start 2P';
+    font-weight: 600;
+}
+
+/* ===============================
+   HOVERS ESPECÍFICOS
+=============================== */
+
+#editarImagenModal .btn-primary:hover   {
+    background-color: #0b5ed7;
+}
+#editarImagenModal .btn-success:hover   {
+    background-color: #157347;
+}
+#editarImagenModal .btn-danger:hover    {
+    background-color: #bb2d3b;
+}
+#editarImagenModal .btn-secondary:hover {
+    background-color: #5c636a;
 }
