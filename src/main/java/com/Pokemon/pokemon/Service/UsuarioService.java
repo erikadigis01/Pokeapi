@@ -34,12 +34,6 @@ public class UsuarioService implements UserDetailsService {
     @Transactional
     public Result add(Usuario usuario) {
         Result result = new Result();
-        try {
-            usuarioRepository.save(usuario);
-            String token = UUID.randomUUID().toString();
-            usuario.setVerificationToken(token);
-            emailService.sendMail(usuario.getEmail(), token);
-            result.correct = true;
 
         } catch (Exception ex) {
             result.correct = false;

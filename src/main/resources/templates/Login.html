@@ -81,17 +81,8 @@
                             </div>
                         </div>
 
-                        <div>
-
-                            <!-- Recordarme y Olvidé contraseña -->
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="remember" name="remember" />
-                                <label for="remember">Recordarme</label>
-                            </div>
-
-                            <div class="forgot-password">
-                                <a href="#">¿Olvidaste tu contraseña?</a>
-                            </div>
+                        <div class="forgot-password">
+                            <a th:href="@{/resetPassword}">¿Olvidaste tu contraseña?</a>
                         </div>
 
                         <!-- Botón Submit -->
@@ -135,69 +126,5 @@
                 </p>
             </div>
         </div>
-
-        <script>
-            function reenviarVerificacion() {
-                const email = document.getElementById("email").value;
-
-                if (!email) {
-                    alert("Escribe tu correo primero");
-                    return;
-                }
-
-                const btn = document.getElementById("btnResend");
-                const msg = document.getElementById("resendMsg");
-
-                btn.disabled = true;
-                btn.innerText = "Enviando...";
-
-                fetch("/api/resend-verification", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({email})
-                })
-                        .then(res => {
-                            if (res.ok) {
-                                btn.style.display = "none";
-                                msg.style.display = "block";
-                            } else {
-                                btn.disabled = false;
-                                btn.innerText = "Reenviar correo";
-                                res.text().then(t => alert(t));
-                            }
-                        });
-            }
-
-        </script>
-
-
-        <script>
-//            console.log("Script cargado");
-//            document.getElementById("loginForm")
-//                    .addEventListener("submit", async (event) => {
-//                        event.preventDefault(); 
-//                        const email = document.getElementById("email").value; 
-//                        const password = document.getElementById("password").value; 
-//                        try { 
-//                            const response = await fetch("http://localhost:8080/auth/login", { 
-//                                method: "POST", 
-//                                headers: { "Content-Type": "application/json" }, 
-//                                body: JSON.stringify({ email, password }) }); 
-//                            const data = await response.json();
-//                            if (data.status === "success") { 
-//                                localStorage.setItem("jwt", data.token);
-//                                window.location.href = "/pokedex";  
-//                            } 
-//                            else { 
-//                                alert(data.message || "Error en login"); 
-//                            } 
-//                        } catch (error) { 
-//                            console.error("Error en login:", error); 
-//                            alert("Error de conexión con el servidor"); 
-//                        } 
-//                    }); 
-        </script>
     </body>
 </html>
