@@ -6,6 +6,7 @@ import com.Pokemon.pokemon.Repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,7 +22,7 @@ public class UsuarioService implements UserDetailsService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
-    
+
     @Autowired
     private EmailService emailService;
 
@@ -34,11 +35,13 @@ public class UsuarioService implements UserDetailsService {
     public Result add(Usuario usuario) {
         Result result = new Result();
 
-        usuarioRepository.save(usuario);
-        String token = UUID.randomUUID().toString();
-        usuario.setVerificationToken(token);
-        emailService.sendMail(usuario.getEmail(), token);
-        result.correct = true;
+        } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+            result.status = 500;
+
+        }
         return result;
     }
 
@@ -47,6 +50,27 @@ public class UsuarioService implements UserDetailsService {
         Usuario findUsuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         return usuarioRepository.save(usuarioActualizado);
+    }
+
+    @Transactional
+    public Result UpdateImagen(Long id, String base64) {
+        Result result = new Result();
+
+        try {
+            Usuario usuarioBD = usuarioRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            usuarioBD.setImagen(base64);
+            result.correct = true;
+            result.status = 202;
+
+        } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+            result.status = 500;
+        }
+
+        return result;
     }
 
     @Transactional
